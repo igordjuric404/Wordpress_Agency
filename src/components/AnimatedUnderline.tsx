@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, type ReactNode } from 'react';
+import { useRef, useEffect, useState, useCallback, type ReactNode } from 'react';
 
 // Declare GSAP global types
 declare global {
@@ -63,7 +63,7 @@ export default function AnimatedUnderline({ children, className = '', triggerRef
   };
 
   // Logic to draw the underline
-  const drawIn = () => {
+  const drawIn = useCallback(() => {
     const box = boxRef.current;
     if (!box || !window.gsap) return;
 
@@ -103,10 +103,10 @@ export default function AnimatedUnderline({ children, className = '', triggerRef
 
     // Advance to next variant for next time
     setCurrentVariantIndex((prev) => (prev + 1) % SVG_VARIANTS.length);
-  };
+  }, [currentVariantIndex, color]);
 
   // Logic to remove the underline
-  const drawOut = () => {
+  const drawOut = useCallback(() => {
     const box = boxRef.current;
     if (!box || !window.gsap) return;
 
@@ -135,7 +135,7 @@ export default function AnimatedUnderline({ children, className = '', triggerRef
     } else {
       playOut();
     }
-  };
+  }, []);
 
   useEffect(() => {
     const trigger = triggerRef?.current || containerRef.current;
@@ -165,7 +165,7 @@ export default function AnimatedUnderline({ children, className = '', triggerRef
       trigger.removeEventListener('mouseenter', drawIn);
       trigger.removeEventListener('mouseleave', drawOut);
     };
-  }, [currentVariantIndex, triggerRef, color, forceActive]);
+  }, [triggerRef, forceActive, drawIn, drawOut]);
 
   return (
     <div ref={containerRef} className={`relative inline-block ${className}`}>

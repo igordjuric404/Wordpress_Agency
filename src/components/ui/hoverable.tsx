@@ -43,7 +43,7 @@ const Hoverable = forwardRef<HTMLElement, HoverableProps>(
         } as React.CSSProperties}
       >
         <Component 
-          ref={ref as any} 
+          ref={ref as never} 
           className={innerClassName}
           style={{
             // Transform transition (fast for hover movement) + color transitions (smooth for state changes)
