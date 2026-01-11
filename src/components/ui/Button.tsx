@@ -97,10 +97,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ${className}
     `.trim();
 
+    // Check if w-full is in className or fullWidth prop
+    const hasFullWidth = fullWidth || className.includes('w-full');
+    const hoverableClassName = hasFullWidth ? 'w-full' : 'inline-block';
+
     // External link
     if (href) {
       return (
-        <Hoverable as="span" className="inline-block" disabled={disabled}>
+        <Hoverable as="span" className={hoverableClassName} disabled={disabled}>
           <a
             href={href}
             target="_blank"
@@ -116,7 +120,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // Internal link
     if (to) {
       return (
-        <Hoverable as="span" className="inline-block" disabled={disabled}>
+        <Hoverable as="span" className={hoverableClassName} disabled={disabled}>
           <Link to={to} className={combinedStyles.replace('inline-flex', 'flex')}>
             {children}
           </Link>

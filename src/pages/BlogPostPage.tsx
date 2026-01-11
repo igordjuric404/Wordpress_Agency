@@ -38,7 +38,7 @@ export default function BlogPostPage() {
   return (
     <div ref={mainRef}>
       {/* Article Header */}
-      <section className="relative overflow-hidden pt-16 md:pt-24 pb-4 md:pb-6">
+      <section className="relative overflow-hidden pt-12 md:pt-16 pb-4 md:pb-6">
         <div className="neo-container">
           <div className="max-w-3xl mx-auto">
             <div className="reveal mb-6">
@@ -47,7 +47,7 @@ export default function BlogPostPage() {
               </span>
             </div>
             
-            <h1 className="reveal font-sora font-extrabold text-3xl sm:text-4xl md:text-5xl text-white leading-tight mb-6">
+            <h1 className="reveal font-sora font-extrabold text-4xl sm:text-5xl md:text-5xl text-white leading-tight mb-6">
               {post.title}
             </h1>
             

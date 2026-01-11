@@ -11,15 +11,12 @@ export default function ServicesPage() {
   return (
     <div ref={mainRef}>
       {/* Hero */}
-      <section className="relative overflow-hidden pt-16 md:pt-24 pb-4 md:pb-6">
+      <section className="relative overflow-hidden pt-12 md:pt-24 pb-4 md:pb-6">
         <div className="neo-container">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="reveal font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white leading-tight pb-8">
+            <h1 className="reveal font-extrabold text-4xl sm:text-5xl md:text-5xl lg:text-6xl text-white leading-tight">
               <span className="font-sora">Our </span><span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Services</span>
             </h1>
-            <p className="reveal font-body text-base md:text-lg lg:text-xl text-neo-gray-dark max-w-2xl mx-auto">
-              We specialize in building fast, secure, and maintainable WordPress solutions focused on delivering measurable outcomes.
-            </p>
           </div>
         </div>
       </section>
@@ -37,19 +34,22 @@ export default function ServicesPage() {
               <Card 
                 key={service.id} 
                 hoverable 
-                className="reveal p-5 md:p-6 flex flex-col h-full"
+                className="reveal p-4 md:p-6 flex flex-col h-full"
                 as="article"
                 background={bg === 'white' ? undefined : bg}
               >
-                <service.icon className={`w-10 h-10 md:w-12 md:h-12 ${color} mb-4 flex-shrink-0`} />
-                <h3 className="font-display font-bold text-xl md:text-2xl mb-3">
-                  {service.title.split('\n').map((line, i) => (
-                    <span key={i}>
-                      {line}
-                      {i < service.title.split('\n').length - 1 && <br />}
-                    </span>
-                  ))}
-                </h3>
+                {/* Mobile: icon + title side by side */}
+                <div className="flex items-center gap-3 md:block mb-2 md:mb-0">
+                  <service.icon className={`w-10 h-10 md:w-12 md:h-12 ${color} flex-shrink-0 md:mb-4`} />
+                  <h3 className="font-display font-bold text-lg md:text-2xl md:mb-3">
+                    {service.title.split('\n').map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        {i < service.title.split('\n').length - 1 && <br />}
+                      </span>
+                    ))}
+                  </h3>
+                </div>
                 <p className="font-body text-sm md:text-base text-neo-black leading-relaxed flex-grow">
                   {service.shortDescription}
                 </p>

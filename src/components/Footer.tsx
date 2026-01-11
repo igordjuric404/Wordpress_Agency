@@ -81,7 +81,7 @@ export default function Footer() {
       <div className="neo-container pt-8 pb-4 md:pt-10 md:pb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand */}
-          <div>
+          <div className="col-span-1 md:col-span-1">
             <Link 
               to="/" 
               className="font-display font-black text-3xl text-neo-black group"
@@ -93,25 +93,69 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="font-display font-black text-lg mb-4 uppercase tracking-tight">Quick Links</h3>
-            <ul className="space-y-2">
-              {quickLinks.map((link) => (
-                <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    className="text-neo-black font-bold hover:text-bold-pink transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Quick Links & Connect - side by side on mobile */}
+          <div className="col-span-1 grid grid-cols-2 md:grid-cols-1 space-between md:gap-0">
+            <div>
+              <h3 className="font-display font-black text-lg mb-4 uppercase tracking-tight">Quick Links</h3>
+              <ul className="space-y-2">
+                {quickLinks.map((link) => (
+                  <li key={link.path}>
+                    <Link
+                      to={link.path}
+                      className="text-neo-black font-bold hover:text-bold-pink transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Connect - visible on mobile in same row */}
+            <div className="md:hidden">
+              <h3 className="font-display font-black text-lg mb-4 uppercase tracking-tight">Connect</h3>
+              <div className="flex flex-wrap justify-between pr-2">
+                {socialLinks.map((social, index) => {
+                  const vBgs = ['bg-bold-pink', 'bg-bold-green', 'bg-bold-blue'];
+                  const vBg = vBgs[index % vBgs.length];
+                  const iconSize = social.name === 'LinkedIn' || social.name === 'Instagram' ? 24 : 24;
+                  
+                  let hoverIconColor = '';
+                  if (social.name === 'Instagram') {
+                    hoverIconColor = 'group-hover:text-bold-pink';
+                  } else if (social.name === 'X') {
+                    hoverIconColor = 'group-hover:text-bold-green';
+                  } else if (social.name === 'LinkedIn') {
+                    hoverIconColor = 'group-hover:text-bold-blue';
+                  }
+                  
+                  return (
+                    <Button
+                      key={social.name}
+                      href={social.href}
+                      aria-label={social.name}
+                      variant="custom"
+                      size="sm"
+                      className={`${vBg} text-white w-11 h-11 !p-0 flex items-center justify-center hover:!bg-white group overflow-visible transition-colors duration-300 ease-in-out`}
+                    >
+                      <social.icon size={iconSize} strokeWidth={2.5} className={`${hoverIconColor} transition-colors duration-300 ease-in-out`} />
+                    </Button>
+                  );
+                })}
+              </div>
+              <p className="mt-3">
+                <a 
+                  href="mailto:hello@neopress.dev" 
+                  className="font-display font-black text-sm text-neo-black bg-bold-yellow px-2 py-1 border-2 border-neo-black inline-block"
+                >
+                  hello@neopress.dev
+                </a>
+              </p>
+            </div>
           </div>
 
-          {/* Social & Contact */}
-          <div>
+          {/* Social & Contact - desktop only */}
+          <div className="hidden md:block">
             <h3 className="font-display font-black text-lg mb-4 uppercase tracking-tight">Connect</h3>
             <div className="flex gap-3">
               {socialLinks.map((social, index) => {
@@ -119,7 +163,6 @@ export default function Footer() {
                 const vBg = vBgs[index % vBgs.length];
                 const iconSize = social.name === 'LinkedIn' || social.name === 'Instagram' ? 27 : 28;
                 
-                // Define hover icon colors for each social link
                 let hoverIconColor = '';
                 if (social.name === 'Instagram') {
                   hoverIconColor = 'group-hover:text-bold-pink';

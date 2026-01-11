@@ -40,15 +40,12 @@ export default function ContactPage() {
   return (
     <div ref={mainRef}>
       {/* Hero */}
-      <section className="relative overflow-hidden pt-16 md:pt-24 pb-4 md:pb-6">
+      <section className="relative overflow-hidden pt-12 md:pt-24 pb-4 md:pb-6">
         <div className="neo-container">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="reveal font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white leading-tight pb-8">
+            <h1 className="reveal font-extrabold text-4xl sm:text-5xl md:text-5xl lg:text-6xl text-white leading-tight">
               <span className="font-sora">Contact </span><span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Us</span>
             </h1>
-            <p className="reveal font-body text-base md:text-lg lg:text-xl text-neo-gray-dark max-w-2xl mx-auto">
-              Tell us about your WordPress project. We typically respond within one business day.
-            </p>
           </div>
         </div>
       </section>
@@ -89,8 +86,9 @@ export default function ContactPage() {
       {/* FAQ Section */}
       <Section>
         <div className="text-center mb-8 md:mb-10">
-          <h2 className="reveal font-display font-bold text-3xl md:text-4xl mb-4">
-            Frequently Asked <span className="bg-bold-purple text-white px-2 border-3 border-neo-black shadow-neo-sm">Questions</span>
+          <h2 className="reveal font-display font-bold text-2xl md:text-4xl mb-4">
+            <span className="whitespace-nowrap">Frequently Asked</span>{' '}
+            <span className="bg-bold-purple text-white px-2 border-3 border-neo-black shadow-neo-sm whitespace-nowrap">Questions</span>
           </h2>
         </div>
         

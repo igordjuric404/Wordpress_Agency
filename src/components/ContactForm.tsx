@@ -212,7 +212,7 @@ export default function ContactForm() {
         </a>
       </div>
 
-      <Button type="submit" fullWidth disabled={isSubmitting} variant="vibrant-pink" className="py-3 text-base">
+      <Button type="submit" fullWidth disabled={isSubmitting} variant="vibrant-pink" className="py-3 text-[18px]">
         {isSubmitting ? 'Sending...' : 'Submit'}
       </Button>
     </form>

@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
 import Button from './ui/Button';
 
 const navLinks = [
@@ -13,7 +12,9 @@ const navLinks = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const location = useLocation();
+  const burgerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     // Close mobile menu on route change
@@ -79,43 +80,64 @@ export default function Header() {
           </ul>
 
           {/* Mobile Menu Button */}
-          <Button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          <button
+            ref={burgerRef}
+            onClick={() => {
+              // Trigger click animation
+              setIsAnimating(true);
+              setTimeout(() => setIsAnimating(false), 200);
+              setIsMenuOpen(!isMenuOpen);
+            }}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-            className="md:hidden w-12 h-12 bg-bold-yellow flex items-center justify-center p-0"
+            className={`md:hidden w-11 h-11 flex items-center justify-center p-0 border-3 border-neo-black rounded-[10px] shadow-neo-sm transition-all duration-150 ${
+              isAnimating 
+                ? 'bg-bold-pink translate-x-[2px] translate-y-[2px]' 
+                : 'bg-white'
+            }`}
           >
-            {isMenuOpen ? <X size={28} strokeWidth={3} /> : <Menu size={28} strokeWidth={3} />}
-          </Button>
+            {/* Burger icon lines */}
+            <div className="flex flex-col justify-center items-center w-5 h-[19px] gap-1">
+              <span className={`block w-4 h-0.5 transition-all duration-200 ${
+                isAnimating ? 'bg-white' : 'bg-neo-black'
+              } ${isMenuOpen ? 'rotate-45 translate-y-[6px]' : ''}`} />
+              <span className={`block w-4 h-0.5 transition-all duration-200 ${
+                isAnimating ? 'bg-white' : 'bg-neo-black'
+              } ${isMenuOpen ? 'opacity-0' : ''}`} />
+              <span className={`block w-4 h-0.5 transition-all duration-200 ${
+                isAnimating ? 'bg-white' : 'bg-neo-black'
+              } ${isMenuOpen ? '-rotate-45 -translate-y-[6px]' : ''}`} />
+            </div>
+          </button>
         </nav>
       </div>
 
       {/* Mobile Menu */}
       <div
         id="mobile-menu"
-        className={`md:hidden fixed inset-0 top-[65px] bg-soft-yellow z-40 transform transition-transform duration-300 ease-out ${
+        className={`md:hidden fixed right-0 top-[64px] bottom-0 w-[250px] z-40 transform transition-transform duration-300 ease-out ${
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
+        style={{ backgroundColor: '#fcfbf5' }}
         aria-hidden={!isMenuOpen}
       >
         <nav className="flex flex-col p-8" role="navigation" aria-label="Mobile navigation">
           <ul className="flex flex-col gap-6" role="menu">
             {navLinks.map((link) => {
-              const bgs = ['bg-white', 'bg-soft-pink', 'bg-soft-green', 'bg-soft-blue', 'bg-soft-purple'];
-              const bg = bgs[navLinks.indexOf(link) % bgs.length];
-
               return (
-                <li key={link.path} role="none">
+                <li key={link.path} role="none" className="w-full">
                   <Button
                     to={link.path}
+                    variant="custom"
                     role="menuitem"
                     tabIndex={isMenuOpen ? 0 : -1}
-                    className={`block px-6 py-4 text-2xl border-4 w-full
+                    className={`block px-6 py-4 text-2xl border-4 !w-full !text-neo-black
                       ${isActive(link.path) 
-                        ? 'bg-neo-black text-white' 
-                        : `${bg} text-neo-black`
+                        ? 'bg-bold-pink !text-white' 
+                        : 'bg-white hover:bg-white/80'
                       }`}
+                    style={{ width: '100%' }}
                   >
                     {link.name}
                   </Button>
@@ -123,13 +145,6 @@ export default function Header() {
               );
             })}
           </ul>
-          <Button
-            to="/contact"
-            tabIndex={isMenuOpen ? 0 : -1}
-            className="mt-10 px-6 py-5 bg-bold-pink text-white text-2xl border-4 text-center uppercase tracking-widest w-full"
-          >
-            Contact us
-          </Button>
         </nav>
       </div>
 

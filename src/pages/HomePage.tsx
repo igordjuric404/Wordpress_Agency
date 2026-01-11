@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState, useRef } from 'react';
 import { 
   Zap, 
   Shield, 
@@ -53,6 +53,10 @@ const processSteps = [
 export default function HomePage() {
   useDocumentTitle('');
   const mainRef = useScrollReveal<HTMLDivElement>();
+  const [isMobile, setIsMobile] = useState(false);
+  const [serviceUnderlineActive, setServiceUnderlineActive] = useState<boolean[]>(
+    () => services.map(() => false)
+  );
   
   // Create refs for service cards
   const cardRefs = useMemo(() => 
@@ -60,13 +64,65 @@ export default function HomePage() {
     []
   );
 
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Scroll-based underline toggle (mobile only)
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const updateUnderlines = () => {
+      const viewportTrigger = window.innerHeight * 0.75;
+
+      setServiceUnderlineActive((prev) => {
+        let changed = false;
+        const next = [...prev];
+        cardRefs.forEach((ref, idx) => {
+          if (!ref.current) return;
+          const rect = ref.current.getBoundingClientRect();
+          const center = rect.top + rect.height / 2;
+          
+          // Logic:
+          // Scroll down → crossing 35% (center goes UP past trigger) = underline turns on
+          // Keep scrolling → underline stays
+          // Scroll up → crossing back below 35% (center goes DOWN past trigger) = underline turns off
+          
+          // So if center <= viewportTrigger, it's active.
+          const shouldBeActive = center <= viewportTrigger;
+
+          if (next[idx] !== shouldBeActive) {
+            next[idx] = shouldBeActive;
+            changed = true;
+          }
+        });
+        return changed ? next : prev;
+      });
+    };
+
+    updateUnderlines();
+    window.addEventListener('scroll', updateUnderlines, { passive: true });
+    window.addEventListener('resize', updateUnderlines);
+
+    return () => {
+      window.removeEventListener('scroll', updateUnderlines);
+      window.removeEventListener('resize', updateUnderlines);
+    };
+  }, [isMobile, cardRefs]);
+
   return (
     <div ref={mainRef}>
       {/* Hero Section */}
       <section className="relative overflow-hidden h-[calc(100vh-4rem-4px)] md:h-[calc(100vh-6rem-4px)]">
         <div className="neo-container h-full flex items-center py-6 md:py-8">
           <div className="max-w-4xl">
-            <h1 className="reveal font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-4 md:mb-5 relative">
+            <h1 className="reveal font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-10 md:mb-5 relative">
               <span className="font-sora">Expert WordPress Solutions for Growing Businesses</span>
             </h1>
             <p className="reveal font-body text-base md:text-lg lg:text-xl text-neo-gray-dark mb-5 md:mb-6 max-w-2xl">
@@ -90,11 +146,11 @@ export default function HomePage() {
             </div>
             
             {/* CTAs */}
-            <div className="reveal flex flex-col sm:flex-row gap-3 md:gap-4">
-              <Button to="/services" variant="bold-pink" size="lg">
+            <div className="reveal flex flex-col items-center sm:items-start sm:flex-row gap-3 md:gap-4">
+              <Button to="/services" variant="bold-pink" size="lg" className="text-[18px]">
                 Explore services
               </Button>
-              <Button to="/contact" variant="bold-blue" size="lg">
+              <Button to="/contact" variant="bold-blue" size="lg" className="text-[18px]">
                 Contact us
               </Button>
             </div>
@@ -113,18 +169,18 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto justify-center">
           {services.map((service, index) => {
             // Unified color pairs: card background matches icon color
-            // Underline color mapping: pink→purple, yellow→blue, blue→yellow, purple→pink, green→blue, orange→blue
+            // Underline colors use complementary colors for best contrast
             const colorPairs: { 
               bg: 'soft-pink' | 'soft-green' | 'soft-yellow' | 'soft-blue' | 'soft-purple' | 'soft-orange'; 
               icon: string;
               underline: string;
             }[] = [
-              { bg: 'soft-orange', icon: 'text-bold-orange', underline: '#00B2FF' }, // orange with blue underline
-              { bg: 'soft-yellow', icon: 'text-bold-yellow', underline: '#00B2FF' }, // blue
-              { bg: 'soft-blue', icon: 'text-bold-blue', underline: '#FFB703' }, // yellow
-              { bg: 'soft-purple', icon: 'text-bold-purple', underline: '#FF2D95' }, // pink
-              { bg: 'soft-green', icon: 'text-bold-green', underline: '#00B2FF' }, // blue
-              { bg: 'soft-pink', icon: 'text-bold-pink', underline: '#A100FF' }, // purple
+              { bg: 'soft-orange', icon: 'text-bold-orange', underline: '#00B2FF' }, // orange → blue (complementary)
+              { bg: 'soft-yellow', icon: 'text-bold-yellow', underline: '#A100FF' }, // yellow → purple (complementary)
+              { bg: 'soft-blue', icon: 'text-bold-blue', underline: '#FF6B35' }, // blue → orange (complementary)
+              { bg: 'soft-purple', icon: 'text-bold-purple', underline: '#FFB703' }, // purple → yellow (complementary)
+              { bg: 'soft-green', icon: 'text-bold-green', underline: '#FF2D95' }, // green → pink (complementary)
+              { bg: 'soft-pink', icon: 'text-bold-pink', underline: '#00E676' }, // pink → green (complementary)
             ];
             const { bg, icon: color, underline } = colorPairs[index % colorPairs.length];
             const cardRef = cardRefs[index];
@@ -133,22 +189,29 @@ export default function HomePage() {
               <Card 
                 key={service.id} 
                 hoverable 
-                className="reveal p-5 md:p-6 flex flex-col h-full"
+                className="reveal p-4 md:p-6 flex flex-col h-full"
                 as="article"
                 background={bg}
                 ref={cardRef as React.Ref<HTMLElement>}
               >
-                <service.icon className={`w-10 h-10 md:w-12 md:h-12 ${color} mb-4 flex-shrink-0`} />
-                <h3 className="font-display font-bold text-xl md:text-2xl mb-2 min-h-[3.5rem] md:min-h-[4rem]">
-                  <AnimatedUnderline triggerRef={cardRef as React.RefObject<HTMLElement>} color={underline}>
-                    {service.title.split('\n').map((line, i) => (
-                      <span key={i}>
-                        {line}
-                        {i < service.title.split('\n').length - 1 && <br />}
-                      </span>
-                    ))}
-                  </AnimatedUnderline>
-                </h3>
+                {/* Mobile: icon + title side by side */}
+                <div className="flex items-center gap-3 md:block mb-2 md:mb-0">
+                  <service.icon className={`w-10 h-10 md:w-12 md:h-12 ${color} flex-shrink-0 md:mb-4`} />
+                  <h3 className="font-display font-bold text-lg md:text-2xl md:mb-2 md:min-h-[4rem] pt-2 md:pt-0">
+                    <AnimatedUnderline 
+                      triggerRef={cardRef as React.RefObject<HTMLElement>} 
+                      color={underline}
+                      forceActive={isMobile ? serviceUnderlineActive[index] : undefined}
+                    >
+                      {service.title.split('\n').map((line, i) => (
+                        <span key={i}>
+                          {line}
+                          {i < service.title.split('\n').length - 1 && <br />}
+                        </span>
+                      ))}
+                    </AnimatedUnderline>
+                  </h3>
+                </div>
                 <p className="font-body text-sm md:text-base text-neo-black leading-relaxed flex-grow">
                   {service.shortDescription}
                 </p>
@@ -181,17 +244,17 @@ export default function HomePage() {
             return (
               <div 
                 key={step.number}
-                className="reveal flex flex-col md:flex-row gap-3 md:gap-4 items-start"
+                className="reveal flex flex-row gap-3 md:gap-4 items-start"
               >
-                <div className={`flex-shrink-0 w-14 h-14 md:w-16 md:h-16 ${vibrantBg} text-white border-2 border-neo-black shadow-neo-sm flex items-center justify-center font-display font-black text-xl md:text-2xl`}>
+                <div className={`flex-shrink-0 w-12 h-12 md:w-16 md:h-16 ${vibrantBg} text-white border-2 border-neo-black shadow-neo-sm flex items-center justify-center font-display font-black text-lg md:text-2xl`}>
                   {step.number}
                 </div>
                 <Card 
                   background={cardBg}
-                  className="flex-1 p-4 md:p-5"
+                  className="flex-1 p-3 md:p-5"
                 >
-                  <h3 className="font-display font-bold text-xl md:text-2xl mb-3">{step.title}</h3>
-                  <p className="font-body text-base md:text-lg text-neo-black">{step.description}</p>
+                  <h3 className="font-display font-bold text-lg md:text-2xl mb-2 md:mb-3">{step.title}</h3>
+                  <p className="font-body text-sm md:text-lg text-neo-black">{step.description}</p>
                 </Card>
               </div>
             );
@@ -252,14 +315,18 @@ export default function HomePage() {
       </Section> */}
 
       {/* Blog Teaser */}
-      <Section id="blog" className="py-16 md:py-16">
-          <div className="text-center mb-8 md:mb-10">
+      <Section id="blog" className="py-12 md:py-16">
+          <div className="text-center mb-6 md:mb-10">
             <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-4 text-white relative">
-              <span className="font-sora">From the </span><span className="bg-bold-yellow text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Blog</span>
+              <span className="bg-bold-yellow text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Blog</span>
             </h2>
+            <p className="reveal font-body text-base md:text-lg text-neo-black max-w-2xl mx-auto">
+              Practical tips on WordPress development, performance, and security.
+            </p>
           </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        {/* Blog cards - hidden on mobile */}
+        <div className="hidden md:grid md:grid-cols-3 gap-4 md:gap-6">
           {blogPosts.slice(0, 3).map((post, index) => {
             const cardBgs: ('soft-pink' | 'soft-yellow' | 'soft-blue' | 'soft-purple' | 'white')[] = ['soft-purple', 'soft-pink', 'soft-yellow'];
             const cardBg = cardBgs[index % cardBgs.length];
@@ -292,8 +359,14 @@ export default function HomePage() {
           })}
         </div>
         
-        <div className="text-center mt-12">
-          <Button to="/blog" variant="vibrant-yellow">
+        <div className="text-center mt-8 md:mt-12">
+          {/* Mobile: different CTA text */}
+          <Button to="/blog" variant="vibrant-yellow" className="md:hidden text-[18px]">
+            Read Our Articles
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
+          {/* Desktop: original CTA */}
+          <Button to="/blog" variant="vibrant-yellow" className="hidden md:inline-flex text-[18px]">
             View All Posts
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
@@ -313,7 +386,7 @@ export default function HomePage() {
             Let's discuss your project and explore how we can help you achieve your goals.
           </p>
           <div className="reveal">
-            <Button to="/services" variant="bold-yellow" size="lg">
+            <Button to="/services" variant="bold-yellow" size="lg" className="text-[18px]">
               See Services
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
@@ -348,7 +421,7 @@ export default function HomePage() {
             <Button
               variant="bold-blue"
               size="lg"
-              className="w-full"
+              className="w-full text-[18px]"
               data-cal-link="igordjuric/15min"
               data-cal-namespace="15min"
               data-cal-config='{"layout":"month_view","theme":"light"}'

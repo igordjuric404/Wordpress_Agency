@@ -74,11 +74,20 @@
     filter: drop-shadow(3px 5px 0 #000000);
   }
   
-  /* Hero section - smaller letter spacing */
+  /* Hero section - reduced stroke on mobile only */
   section:first-of-type .font-sora,
   section:first-of-type h1.font-sora {
-    -webkit-text-stroke: 6px #111111;
-    letter-spacing: 0.06em;
+    -webkit-text-stroke: 4px #111111;
+    letter-spacing: 0.05em;
+  }
+  
+  /* Desktop: thicker strokes for hero */
+  @media (min-width: 768px) {
+    section:first-of-type .font-sora,
+    section:first-of-type h1.font-sora {
+      -webkit-text-stroke: 6px #111111;
+      letter-spacing: 0.06em;
+    }
   }
   
   /* Remove Sora styling from highlighted/colored text spans */
@@ -186,6 +195,12 @@
     /* Add padding to accommodate the 6px shadow offset */
     padding-right: 6px;
     padding-bottom: 6px;
+  }
+  
+  /* Full-width wrapper - use block display */
+  .neo-shadow-wrapper-full {
+    display: block !important;
+    width: 100% !important;
   }
   
   /* Shadow pseudo-element matches exact button dimensions, offset by 6px */

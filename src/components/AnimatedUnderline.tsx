@@ -42,14 +42,17 @@ interface AnimatedUnderlineProps {
   className?: string;
   triggerRef?: React.RefObject<HTMLElement>;
   color?: string; // Optional color prop, defaults to random if not provided
+  forceActive?: boolean; // Optional prop to force active state (e.g. for scroll triggers)
 }
 
-export default function AnimatedUnderline({ children, className = '', triggerRef, color }: AnimatedUnderlineProps) {
+export default function AnimatedUnderline({ children, className = '', triggerRef, color, forceActive }: AnimatedUnderlineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const [currentVariantIndex, setCurrentVariantIndex] = useState(0);
   const enterTweenRef = useRef<GSAPTween | null>(null);
   const leaveTweenRef = useRef<GSAPTween | null>(null);
+  // Track if we are currently "active" (drawn or drawing) to prevent redundant calls
+  const isActiveRef = useRef(false);
 
   const getRandomColor = () => {
     return UNDERLINE_COLORS[Math.floor(Math.random() * UNDERLINE_COLORS.length)];
@@ -59,80 +62,110 @@ export default function AnimatedUnderline({ children, className = '', triggerRef
     return color || getRandomColor();
   };
 
-  useEffect(() => {
+  // Logic to draw the underline
+  const drawIn = () => {
     const box = boxRef.current;
+    if (!box || !window.gsap) return;
+
+    // Don't restart if still playing or already active
+    if (isActiveRef.current && enterTweenRef.current?.isActive()) return;
+    if (leaveTweenRef.current && leaveTweenRef.current.isActive()) {
+      leaveTweenRef.current.kill();
+    }
+
+    isActiveRef.current = true;
+
+    // Set color
+    const underlineColor = getColor();
+    
+    // Set the SVG content if it's not already there
+    if (!box.innerHTML.trim()) {
+        box.innerHTML = `
+          <svg width="310" height="40" viewBox="0 0 310 40" fill="none" xmlns="http://www.w3.org/2000/svg" 
+               class="absolute w-full h-full overflow-visible" preserveAspectRatio="none" style="color: ${underlineColor}">
+            ${SVG_VARIANTS[currentVariantIndex]}
+          </svg>
+        `;
+    }
+
+    const path = box.querySelector('path');
+    if (path && window.gsap) {
+      window.gsap.set(path, { drawSVG: '0%' });
+      enterTweenRef.current = window.gsap.to(path, {
+        duration: 0.5,
+        drawSVG: '100%',
+        ease: 'power2.inOut',
+        onComplete: () => {
+          enterTweenRef.current = null;
+        },
+      });
+    }
+
+    // Advance to next variant for next time
+    setCurrentVariantIndex((prev) => (prev + 1) % SVG_VARIANTS.length);
+  };
+
+  // Logic to remove the underline
+  const drawOut = () => {
+    const box = boxRef.current;
+    if (!box || !window.gsap) return;
+
+    const path = box.querySelector('path');
+    if (!path) {
+        isActiveRef.current = false;
+        return;
+    }
+
+    const playOut = () => {
+      if (leaveTweenRef.current && leaveTweenRef.current.isActive()) return;
+      leaveTweenRef.current = window.gsap!.to(path, {
+        duration: 0.5,
+        drawSVG: '100% 100%',
+        ease: 'power2.inOut',
+        onComplete: () => {
+          leaveTweenRef.current = null;
+          box.innerHTML = '';
+          isActiveRef.current = false;
+        },
+      });
+    };
+
+    if (enterTweenRef.current && enterTweenRef.current.isActive()) {
+      enterTweenRef.current.eventCallback('onComplete', playOut);
+    } else {
+      playOut();
+    }
+  };
+
+  useEffect(() => {
     const trigger = triggerRef?.current || containerRef.current;
-    if (!trigger || !box || !window.gsap || !window.DrawSVGPlugin) return;
+    if (!trigger || !boxRef.current || !window.gsap || !window.DrawSVGPlugin) return;
 
     window.gsap.registerPlugin(window.DrawSVGPlugin);
 
-    const handleMouseEnter = () => {
-      // Don't restart if still playing
-      if (enterTweenRef.current && enterTweenRef.current.isActive()) return;
-      if (leaveTweenRef.current && leaveTweenRef.current.isActive()) {
-        leaveTweenRef.current.kill();
-      }
+    // If forceActive is controlled externally
+    if (typeof forceActive === 'boolean') {
+        if (forceActive) {
+            if (!isActiveRef.current) {
+                drawIn();
+            }
+        } else {
+            if (isActiveRef.current) {
+                drawOut();
+            }
+        }
+        return; // Don't add hover listeners if controlled externally
+    }
 
-      // Set color (use prop if provided, otherwise random)
-      const underlineColor = getColor();
-      
-      // Set the SVG content
-      box.innerHTML = `
-        <svg width="310" height="40" viewBox="0 0 310 40" fill="none" xmlns="http://www.w3.org/2000/svg" 
-             class="absolute w-full h-full overflow-visible" preserveAspectRatio="none" style="color: ${underlineColor}">
-          ${SVG_VARIANTS[currentVariantIndex]}
-        </svg>
-      `;
-
-      const path = box.querySelector('path');
-      if (path && window.gsap) {
-        window.gsap.set(path, { drawSVG: '0%' });
-        enterTweenRef.current = window.gsap.to(path, {
-          duration: 0.5,
-          drawSVG: '100%',
-          ease: 'power2.inOut',
-          onComplete: () => {
-            enterTweenRef.current = null;
-          },
-        });
-      }
-
-      // Advance to next variant for next hover
-      setCurrentVariantIndex((prev) => (prev + 1) % SVG_VARIANTS.length);
-    };
-
-    const handleMouseLeave = () => {
-      const path = box.querySelector('path');
-      if (!path || !window.gsap) return;
-
-      const playOut = () => {
-        if (leaveTweenRef.current && leaveTweenRef.current.isActive()) return;
-        leaveTweenRef.current = window.gsap!.to(path, {
-          duration: 0.5,
-          drawSVG: '100% 100%',
-          ease: 'power2.inOut',
-          onComplete: () => {
-            leaveTweenRef.current = null;
-            box.innerHTML = '';
-          },
-        });
-      };
-
-      if (enterTweenRef.current && enterTweenRef.current.isActive()) {
-        enterTweenRef.current.eventCallback('onComplete', playOut);
-      } else {
-        playOut();
-      }
-    };
-
-    trigger.addEventListener('mouseenter', handleMouseEnter);
-    trigger.addEventListener('mouseleave', handleMouseLeave);
+    // Default hover behavior
+    trigger.addEventListener('mouseenter', drawIn);
+    trigger.addEventListener('mouseleave', drawOut);
 
     return () => {
-      trigger.removeEventListener('mouseenter', handleMouseEnter);
-      trigger.removeEventListener('mouseleave', handleMouseLeave);
+      trigger.removeEventListener('mouseenter', drawIn);
+      trigger.removeEventListener('mouseleave', drawOut);
     };
-  }, [currentVariantIndex, triggerRef, color]);
+  }, [currentVariantIndex, triggerRef, color, forceActive]);
 
   return (
     <div ref={containerRef} className={`relative inline-block ${className}`}>

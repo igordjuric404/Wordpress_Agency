@@ -34,22 +34,19 @@ export default function BlogPage() {
   return (
     <div ref={mainRef}>
       {/* Hero */}
-      <section className="relative overflow-hidden pt-16 md:pt-24 pb-4 md:pb-6">
+      <section className="relative overflow-hidden pt-12 md:pt-24 pb-4 md:pb-6">
         <div className="neo-container">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="reveal font-sora font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white leading-tight pb-8">
+            <h1 className="reveal font-sora font-extrabold text-4xl sm:text-5xl md:text-5xl lg:text-6xl text-white leading-tight">
               <span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Blog</span>
             </h1>
-            <p className="reveal font-body text-base md:text-lg lg:text-xl text-neo-gray-dark max-w-2xl mx-auto">
-              Practical tips on WordPress development, performance, and security.
-            </p>
           </div>
         </div>
       </section>
 
       {/* Category Filter */}
-      <Section>
-        <div className="flex flex-wrap justify-start gap-3" role="tablist" aria-label="Filter posts by category">
+      <Section className="pt-4 md:pt-8">
+        <div className="flex flex-wrap justify-start gap-2 md:gap-3" role="tablist" aria-label="Filter posts by category">
           {categories.map((category, index) => {
             const hoverColors = ['hover:bg-bold-pink', 'hover:bg-bold-green', 'hover:bg-bold-yellow', 'hover:bg-bold-blue', 'hover:bg-bold-purple', 'hover:bg-bold-pink'];
             const hoverColor = hoverColors[index % hoverColors.length];
@@ -62,7 +59,7 @@ export default function BlogPage() {
                 size="sm"
                 role="tab"
                 aria-selected={activeCategory === category}
-                className={`px-5 py-2 text-sm ${
+                className={`px-3 py-1.5 text-xs md:px-5 md:py-2 md:text-sm ${
                   activeCategory === category 
                     ? 'bg-bold-pink text-white' 
                     : `bg-white text-neo-black ${hoverColor} hover:text-white`
