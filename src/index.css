@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800;900&family=Sora:wght@700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===========================================
+   CSS CUSTOM PROPERTIES
+   Centralized color tokens for prose/legacy styles
+   =========================================== */
+:root {
+  /* Brand colors as CSS vars (for use in non-Tailwind contexts) */
+  --color-soft-pink: #FFE0EE;
+  --color-soft-green: #E3FCE6;
+  --color-soft-yellow: #FFF9D8;
+  --color-soft-blue: #D1E9FF;
+  --color-soft-purple: #F1E1FF;
+  --color-soft-orange: #FFE0D6;
+  
+  --color-bold-pink: #FF2D95;
+  --color-bold-green: #00E676;
+  --color-bold-yellow: #FFB703;
+  --color-bold-blue: #00B2FF;
+  --color-bold-purple: #A100FF;
+  --color-bold-orange: #FF6B35;
+  
+  /* Shadow colors (darker variants) */
+  --color-shadow-pink: #B8005C;
+  --color-shadow-green: rgb(0, 83, 42);
+  --color-shadow-yellow: #B88200;
+  --color-shadow-blue: #007DB3;
+  --color-shadow-purple: #7000B3;
+  --color-shadow-orange: #CC5529;
+}
+
+/* ===========================================
+   BASE STYLES
+   =========================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-body text-neo-black;
+    background-color: #fcfbf5;
+    line-height: 1.6;
+    cursor: url('/cursor.png') 2 0, auto;
+  }
+  
+  /* Custom pointer cursor for interactive elements */
+  a, button, [role="button"], input[type="submit"], input[type="button"],
+  select, label[for], .cursor-pointer {
+    cursor: url('/pointer.png') 12 0, pointer;
+  }
+  
+  /* Scrolling dot pattern applied to main content area */
+  main {
+    background-color: #fcfbf5;
+    background-image: radial-gradient(circle, #d2d2d2 2px, transparent 1px);
+    background-size: 82px 82px;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-black uppercase tracking-tight;
+    line-height: 1.1;
+  }
+  
+  /* Sora font letter border styling */
+  .font-sora {
+    -webkit-text-stroke: 4px #111111;
+    paint-order: stroke fill;
+    letter-spacing: 0.1em;
+    filter: drop-shadow(3px 5px 0 #000000);
+  }
+  
+  /* Hero section - smaller letter spacing */
+  section:first-of-type .font-sora,
+  section:first-of-type h1.font-sora {
+    -webkit-text-stroke: 6px #111111;
+    letter-spacing: 0.06em;
+  }
+  
+  /* Remove Sora styling from highlighted/colored text spans */
+  .font-sora span[class*="bg-bold-"],
+  .font-sora span[class*="text-bold-"],
+  .font-sora span.font-display {
+    -webkit-text-stroke: 0;
+    letter-spacing: normal;
+    filter: none !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Force colors (defensive override) */
+  .bg-bold-pink { background-color: #FF2D95 !important; }
+  .bg-bold-green { background-color: #00E676 !important; }
+  .bg-bold-yellow { background-color: #FFB703 !important; }
+  .bg-bold-blue { background-color: #00B2FF !important; }
+  .bg-bold-purple { background-color: #A100FF !important; }
+  .bg-bold-orange { background-color: #FF6B35 !important; }
+  
+  .text-bold-pink { color: #FF2D95 !important; }
+  .text-bold-green { color: #00E676 !important; }
+  .text-bold-yellow { color: #FFB703 !important; }
+  .text-bold-blue { color: #00B2FF !important; }
+  .text-bold-purple { color: #A100FF !important; }
+  .text-bold-orange { color: #FF6B35 !important; }
+
+  .bg-soft-pink { background-color: #FFE0EE !important; }
+  .bg-soft-green { background-color: #E3FCE6 !important; }
+  .bg-soft-yellow { background-color: #FFF9D8 !important; }
+  .bg-soft-blue { background-color: #D1E9FF !important; }
+  .bg-soft-purple { background-color: #F1E1FF !important; }
+  .bg-soft-orange { background-color: #FFE0D6 !important; }
+
+  /* Focus states for accessibility */
+  :focus-visible {
+    @apply outline-4 outline-offset-4;
+    outline-color: var(--color-bold-pink);
+  }
+  
+  /* Skip to content link for accessibility */
+  .skip-link {
+    @apply absolute left-0 top-0 bg-neo-black text-white px-4 py-2 z-50 transform -translate-y-full focus:translate-y-0 transition-transform;
+  }
+}
+
+/* ===========================================
+   COMPONENT STYLES
+   Reusable component patterns
+   =========================================== */
+@layer components {
+  /* Container */
+  .neo-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Standard section padding */
+  .neo-section {
+    @apply py-16 md:py-24 px-4;
+  }
+  
+  /* Form input styling */
+  .neo-input {
+    @apply w-full px-4 py-3 border-3 border-neo-black bg-white font-body
+           focus:outline-none
+           transition-shadow duration-150;
+  }
+  
+  .neo-input::placeholder {
+    @apply text-gray-500;
+  }
+  
+  /* Badge styling */
+  .neo-badge {
+    @apply inline-block px-3 py-1 text-sm font-display font-bold
+           border-2 border-neo-black bg-neo-gray;
+  }
+  
+  /* Beige dot grid pattern background */
+  .bg-beige-dots {
+    background-color: #fcfbf5;
+    background-image: radial-gradient(circle, #eeeeee 3px, transparent 1px);
+    background-size: 82px 82px;
+  }
+
+  /* Header - same color as body, black border */
+  header {
+    background-color: #fcfbf5 !important;
+    background-image: none !important;
+    border-bottom: 4px solid #111111 !important;
+  }
+
+  /* Footer - same color as header, black border */
+  footer {
+    background-color: #fcfbf5 !important;
+    background-image: none !important;
+    border-top: 4px solid #111111 !important;
+  }
+
+  /* Hoverable shadow wrapper - creates shadow matching exact button dimensions */
+  .neo-shadow-wrapper {
+    position: relative;
+    display: inline-block;
+    /* Add padding to accommodate the 6px shadow offset */
+    padding-right: 6px;
+    padding-bottom: 6px;
+  }
+  
+  /* Shadow pseudo-element matches exact button dimensions, offset by 6px */
+  .neo-shadow-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    /* Match the button's exact dimensions */
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    background-color: #111111;
+    border-radius: 10px;
+    z-index: 0;
+    pointer-events: none;
+  }
+  
+  /* Ensure the inner element is above the shadow */
+  .neo-shadow-wrapper > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* ===========================================
+   UTILITY CLASSES
+   =========================================== */
+@layer utilities {
+  /* Animation delays for staggered reveals */
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-400 { animation-delay: 400ms; }
+  .animation-delay-500 { animation-delay: 500ms; }
+  
+  /* Custom duration for smooth animations */
+  .duration-400 { transition-duration: 400ms; }
+  
+  /* ===========================================
+     PROSE STYLES - Blog/content typography
+     Uses CSS vars for colors (can't use Tailwind in prose)
+     =========================================== */
+  .prose-neo {
+    @apply text-neo-black font-body font-bold;
+  }
+  
+  .prose-neo h1 {
+    @apply text-4xl md:text-5xl font-display font-black mb-8 border-3 border-neo-black p-4 shadow-neo-sm;
+    background-color: var(--color-soft-yellow);
+  }
+  
+  .prose-neo h2 {
+    @apply text-3xl md:text-4xl font-display font-black mt-16 mb-6;
+    color: var(--color-bold-pink);
+  }
+  
+  .prose-neo h3 {
+    @apply text-2xl md:text-3xl font-display font-black mt-12 mb-4 bg-neo-black text-white px-3 py-1 inline-block;
+  }
+  
+  .prose-neo p {
+    @apply mb-6 leading-relaxed text-lg;
+  }
+  
+  .prose-neo ul, .prose-neo ol {
+    @apply mb-8 pl-8 space-y-4;
+  }
+  
+  .prose-neo li {
+    @apply mb-3 text-lg;
+  }
+  
+  .prose-neo ul li {
+    @apply list-none relative;
+  }
+
+  .prose-neo ul li::before {
+    content: "";
+    @apply absolute -left-8 top-2 w-4 h-4 border-2 border-neo-black;
+    background-color: var(--color-bold-blue);
+  }
+  
+  .prose-neo ol li {
+    @apply list-decimal font-black;
+    color: var(--color-bold-purple);
+  }
+
+  .prose-neo ol li > * {
+    @apply font-bold text-neo-black;
+  }
+  
+  .prose-neo a {
+    @apply text-neo-black underline decoration-4 underline-offset-4 hover:text-white transition-all;
+    text-decoration-color: var(--color-bold-pink);
+  }
+  
+  .prose-neo a:hover {
+    background-color: var(--color-bold-pink);
+  }
+  
+  .prose-neo blockquote {
+    @apply border-l-8 p-8 italic my-12 font-black text-2xl leading-tight border-y-4 border-r-4 border-neo-black shadow-neo;
+    border-left-color: var(--color-bold-yellow);
+    background-color: rgba(255, 249, 216, 0.3);
+  }
+  
+  .prose-neo code {
+    @apply px-2 py-1 border-2 border-neo-black font-black text-sm;
+    background-color: var(--color-soft-pink);
+  }
+  
+  .prose-neo pre {
+    @apply bg-neo-black text-white p-8 border-4 border-neo-black overflow-x-auto mb-10;
+    box-shadow: 6px 6px 0 var(--color-bold-blue);
+  }
+  
+  .prose-neo pre code {
+    @apply bg-transparent p-0 border-none text-base;
+  }
+}
+
+/* ===========================================
+   ANIMATIONS
+   =========================================== */
+
+/* Scroll reveal animation */
+.reveal {
+  opacity: 0;
+  /* Use the Transform Level 2 `translate` property so hover `transform` (via Tailwind) can still work. */
+  translate: 0 20px;
+  transition: opacity 0.6s ease-out, translate 0.6s ease-out;
+}
+
+.reveal.visible {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Mobile menu animation */
+.mobile-menu-enter {
+  transform: translateX(100%);
+}
+
+.mobile-menu-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-out;
+}
+
+.mobile-menu-exit {
+  transform: translateX(0);
+}
+
+.mobile-menu-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms ease-in;
+}
