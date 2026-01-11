@@ -1,0 +1,45 @@
+/*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/*.mjs
+  Content-Type: application/javascript; charset=utf-8
+
+/*.wasm
+  Content-Type: application/wasm
+
+/*.css
+  Content-Type: text/css; charset=utf-8
+
+/*.json
+  Content-Type: application/json; charset=utf-8
+
+/*.svg
+  Content-Type: image/svg+xml
+
+/*.png
+  Content-Type: image/png
+
+/*.jpg
+  Content-Type: image/jpeg
+
+/*.jpeg
+  Content-Type: image/jpeg
+
+/*.webp
+  Content-Type: image/webp
+
+/*.woff
+  Content-Type: font/woff
+
+/*.woff2
+  Content-Type: font/woff2
+
+/*.ttf
+  Content-Type: font/ttf
+
+/*.otf
+  Content-Type: font/otf
+
+/*.eot
+  Content-Type: application/vnd.ms-fontobject
+
