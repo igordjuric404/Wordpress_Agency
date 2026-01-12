@@ -3,6 +3,7 @@ import Header from './Header';
 import Footer from './Footer';
 import ClickSpark from './ClickSpark';
 import ScrollRestoration from './ScrollRestoration';
+import CopyEditToolbar from './CopyEditToolbar';
 
 interface LayoutProps {
   children: ReactNode;
@@ -26,6 +27,7 @@ export default function Layout({ children }: LayoutProps) {
       <Footer />
       
       <ClickSpark />
+      <CopyEditToolbar />
     </div>
   );
 }

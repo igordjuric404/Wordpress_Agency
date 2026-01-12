@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Button from './ui/Button';
+import { useLanguage } from '../hooks/useLanguage';
 
 // Custom X icon component
 const XIcon = ({ size = 28, strokeWidth: _strokeWidth, className = '' }: { size?: number; strokeWidth?: number; className?: string }) => (
@@ -73,7 +74,7 @@ const socialLinks = [
 ];
 
 export default function Footer() {
-
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -89,31 +90,31 @@ export default function Footer() {
               Neo<span className="text-white bg-neo-black px-2 group-hover:bg-bold-pink transition-colors">Press</span>
             </Link>
             <p className="mt-4 text-neo-black font-bold text-base leading-snug">
-              Expert WordPress development for businesses that demand performance, security, and scalability.
+              {t('footer.description')}
             </p>
           </div>
 
           {/* Quick Links & Connect - side by side on mobile */}
           <div className="col-span-1 grid grid-cols-2 md:grid-cols-1 space-between md:gap-0">
-            <div>
-              <h3 className="font-display font-black text-lg mb-4 uppercase tracking-tight">Quick Links</h3>
-              <ul className="space-y-2">
-                {quickLinks.map((link) => (
-                  <li key={link.path}>
-                    <Link
-                      to={link.path}
-                      className="text-neo-black font-bold hover:text-bold-pink transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div>
+              <h3 className="font-display font-black text-lg mb-4 uppercase tracking-tight">{t('footer.quickLinks')}</h3>
+            <ul className="space-y-2">
+              {quickLinks.map((link) => (
+                <li key={link.path}>
+                  <Link
+                    to={link.path}
+                    className="text-neo-black font-bold hover:text-bold-pink transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
             {/* Connect - visible on mobile in same row */}
             <div className="md:hidden">
-              <h3 className="font-display font-black text-lg mb-4 uppercase tracking-tight">Connect</h3>
+              <h3 className="font-display font-black text-lg mb-4 uppercase tracking-tight">{t('footer.connect')}</h3>
               <div className="flex flex-wrap justify-between pr-2">
                 {socialLinks.map((social, index) => {
                   const vBgs = ['bg-bold-pink', 'bg-bold-green', 'bg-bold-blue'];
@@ -146,7 +147,7 @@ export default function Footer() {
               <p className="mt-3">
                 <a 
                   href="mailto:hello@neopress.dev" 
-                  className="font-display font-black text-sm text-neo-black bg-bold-yellow px-2 py-1 border-2 border-neo-black inline-block"
+                  className="font-display font-black text-sm text-bold-pink hover:underline"
                 >
                   hello@neopress.dev
                 </a>
@@ -189,7 +190,7 @@ export default function Footer() {
             <p className="mt-4">
               <a 
                 href="mailto:hello@neopress.dev" 
-                className="font-display font-black text-lg text-neo-black bg-bold-yellow px-2 py-1 border-2 border-neo-black inline-block"
+                className="font-display font-black text-lg text-bold-pink hover:underline"
               >
                 hello@neopress.dev
               </a>
@@ -200,7 +201,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-neo-black font-black">
-            © {currentYear} NeoPress
+            {t('footer.copyright').replace('{year}', currentYear.toString())}
           </p>
         </div>
       </div>

@@ -3,10 +3,13 @@ import { Button, Card, Section } from '../components/ui';
 import { services } from '../data/services';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useLanguage } from '../hooks/useLanguage';
+import EditableText from '../components/EditableText';
 
 export default function ServicesPage() {
   useDocumentTitle('Services');
   const mainRef = useScrollReveal<HTMLDivElement>();
+  const { t } = useLanguage();
 
   return (
     <div ref={mainRef}>
@@ -15,7 +18,7 @@ export default function ServicesPage() {
         <div className="neo-container">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="reveal font-extrabold text-4xl sm:text-5xl md:text-5xl lg:text-6xl text-white leading-tight">
-              <span className="font-sora">Our </span><span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Services</span>
+              <span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>{t('services.title')}</span>
             </h1>
           </div>
         </div>
@@ -42,16 +45,20 @@ export default function ServicesPage() {
                 <div className="flex items-center gap-3 md:block mb-2 md:mb-0">
                   <service.icon className={`w-10 h-10 md:w-12 md:h-12 ${color} flex-shrink-0 md:mb-4`} />
                   <h3 className="font-display font-bold text-lg md:text-2xl md:mb-3">
-                    {service.title.split('\n').map((line, i) => (
-                      <span key={i}>
-                        {line}
-                        {i < service.title.split('\n').length - 1 && <br />}
-                      </span>
-                    ))}
-                  </h3>
+                    <EditableText copyKey={`services.${service.id}.title`} as="span">
+                      {t(`services.${service.id}.title`).split('\n').map((line, i, arr) => (
+                    <span key={i}>
+                      {line}
+                          {i < arr.length - 1 && <br />}
+                    </span>
+                  ))}
+                    </EditableText>
+                </h3>
                 </div>
                 <p className="font-body text-sm md:text-base text-neo-black leading-relaxed flex-grow">
-                  {service.shortDescription}
+                  <EditableText copyKey={`services.${service.id}.description`} as="span">
+                    {t(`services.${service.id}.description`)}
+                  </EditableText>
                 </p>
               </Card>
             );
@@ -66,14 +73,14 @@ export default function ServicesPage() {
         
         <div className="neo-container relative z-10 text-center">
           <h2 className="reveal font-display font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white mb-6 max-w-4xl mx-auto">
-            Ready to build a <span className="text-bold-yellow italic">faster</span>, smarter WordPress site?
+            {t('cta.title')}
           </h2>
           <p className="reveal font-body text-base md:text-lg text-white/90 max-w-3xl mx-auto mb-8 font-medium">
-            Let's discuss your project and explore how we can help you achieve your goals.
+            {t('cta.description')}
           </p>
           <div className="reveal">
             <Button to="/contact" variant="bold-yellow" size="lg">
-              Contact Us
+              {t('cta.button.contact')}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </div>

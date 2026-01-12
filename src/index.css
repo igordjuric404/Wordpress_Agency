@@ -41,6 +41,17 @@
     scroll-behavior: smooth;
   }
   
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  html::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  html {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
   body {
     @apply font-body text-neo-black;
     background-color: #fcfbf5;
@@ -91,14 +102,21 @@
   }
   
   /* Remove Sora styling from highlighted/colored text spans */
-  .font-sora span[class*="bg-bold-"],
-  .font-sora span[class*="text-bold-"],
-  .font-sora span.font-display {
+  .font-sora span[class*="bg-bold-"]:not(.zaradite-highlight),
+  .font-sora span[class*="text-bold-"]:not(.zaradite-highlight),
+  .font-sora span.font-display:not(.zaradite-highlight) {
     -webkit-text-stroke: 0;
     letter-spacing: normal;
     filter: none !important;
     text-shadow: none !important;
     box-shadow: none !important;
+  }
+  
+  /* Hero section - thicker stroke for desktop on zaradite highlight */
+  @media (min-width: 768px) {
+    .zaradite-highlight {
+      -webkit-text-stroke: 6px #111111 !important;
+    }
   }
   
   /* Force colors (defensive override) */

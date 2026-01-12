@@ -109,7 +109,7 @@ export default function Dropdown({
         {/* Dropdown Menu */}
         {isOpen && (
           <div 
-            className="absolute z-50 w-full mt-2 bg-white border-4 border-neo-black shadow-neo-lg max-h-64 overflow-y-auto"
+            className="absolute top-full left-0 right-0 bg-white border-3 border-neo-black border-t-0 shadow-neo-lg z-50"
             role="listbox"
           >
             {options.map((option, index) => {
@@ -123,7 +123,7 @@ export default function Dropdown({
                   type="button"
                   onClick={() => handleSelect(option.value)}
                   className={`
-                    w-full px-4 py-3 text-left font-body font-bold border-b-2 border-neo-black last:border-b-0
+                    w-full px-4 py-3 text-left font-body font-bold border-b-3 border-neo-black last:border-b-0
                     transition-colors flex items-center justify-between
                     ${isSelected ? 'bg-bold-pink text-white' : `text-neo-black ${hoverColor}`}
                   `}

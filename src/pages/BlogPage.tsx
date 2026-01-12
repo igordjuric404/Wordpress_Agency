@@ -5,6 +5,7 @@ import { Button, Card, Section } from '../components/ui';
 import { blogPosts } from '../data/blog';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useLanguage } from '../hooks/useLanguage';
 
 const categories = ['All', 'Tutorials', 'Performance', 'Security', 'Development', 'SEO'];
 
@@ -25,6 +26,7 @@ const getCategoryColors = (category: string) => {
 export default function BlogPage() {
   useDocumentTitle('Blog');
   const mainRef = useScrollReveal<HTMLDivElement>();
+  const { t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState('All');
 
   const filteredPosts = activeCategory === 'All' 
@@ -78,7 +80,7 @@ export default function BlogPage() {
         {filteredPosts.length === 0 ? (
           <div className="text-center py-12">
             <p className="font-display font-bold text-xl text-neo-black">
-              No posts found in this category.
+              {t('blog.emptyState')}
             </p>
           </div>
         ) : (

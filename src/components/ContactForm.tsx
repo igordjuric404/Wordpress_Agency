@@ -3,14 +3,16 @@ import { Button, Input, Textarea } from './ui';
 import Dropdown from './ui/Dropdown';
 import { CheckCircle, AlertCircle } from 'lucide-react';
 
-const serviceOptions = [
-  { value: 'ecommerce', label: 'E-commerce Development' },
-  { value: 'custom-development', label: 'Custom WordPress Development' },
-  { value: 'ai-integration', label: 'AI Integration' },
-  { value: 'seo-geo', label: 'SEO and GEO Optimization' },
-  { value: 'plugin-integration', label: 'Plugin Integration' },
-  { value: 'maintenance', label: 'Maintenance & Support' },
-  { value: 'other', label: 'Other / Not Sure' },
+import { useLanguage } from '../hooks/useLanguage';
+
+const getServiceOptions = (t: (key: string) => string) => [
+  { value: 'ecommerce', label: t('contact.form.service.ecommerce') },
+  { value: 'custom-development', label: t('contact.form.service.custom') },
+  { value: 'ai-integration', label: t('contact.form.service.ai') },
+  { value: 'seo-geo', label: t('contact.form.service.seo') },
+  { value: 'plugin-integration', label: t('contact.form.service.integrations') },
+  { value: 'maintenance', label: t('contact.form.service.maintenance') },
+  { value: 'other', label: t('contact.form.service.other') },
 ];
 
 interface FormData {
@@ -29,6 +31,7 @@ interface FormErrors {
 }
 
 export default function ContactForm() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -39,28 +42,29 @@ export default function ContactForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const serviceOptions = getServiceOptions(t);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = t('contact.form.validation.name');
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('contact.form.validation.email');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = t('contact.form.validation.emailInvalid');
     }
 
     if (!formData.service) {
-      newErrors.service = 'Please select a service';
+      newErrors.service = t('contact.form.validation.service');
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
+      newErrors.message = t('contact.form.validation.message');
     } else if (formData.message.trim().length < 20) {
-      newErrors.message = 'Please provide more details (at least 20 characters)';
+      newErrors.message = t('contact.form.validation.messageLength');
     }
 
     setErrors(newErrors);
@@ -135,9 +139,9 @@ export default function ContactForm() {
         <div className="p-3 bg-soft-pink border-2 border-neo-black flex items-start gap-2 shadow-neo-sm" role="alert">
           <AlertCircle className="w-5 h-5 text-bold-pink flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-display font-black text-bold-pink uppercase text-sm">Something went wrong</p>
+            <p className="font-display font-black text-bold-pink uppercase text-sm">{t('contact.form.error.title')}</p>
             <p className="font-body text-sm text-neo-black font-bold">
-              Please try again or email us directly at hello@neopress.dev
+              {t('contact.form.error.message')}
             </p>
           </div>
         </div>
@@ -163,7 +167,7 @@ export default function ContactForm() {
         onChange={handleChange('name')}
         error={errors.name}
         required
-        placeholder="Your name"
+        placeholder={t('contact.form.placeholder.name')}
         className="focus:ring-bold-pink/40"
       />
 
@@ -175,7 +179,7 @@ export default function ContactForm() {
         onChange={handleChange('email')}
         error={errors.email}
         required
-        placeholder="your@email.com"
+        placeholder={t('contact.form.placeholder.email')}
         className="focus:ring-bold-blue/40"
       />
 
@@ -185,7 +189,7 @@ export default function ContactForm() {
         value={formData.service}
         onChange={handleChange('service')}
         options={serviceOptions}
-        placeholder="Select a service..."
+        placeholder={t('contact.form.placeholder.service')}
         error={errors.service}
         required
       />
@@ -197,23 +201,33 @@ export default function ContactForm() {
         onChange={handleChange('message')}
         error={errors.message}
         required
-        placeholder="Tell us about your project, goals, and timeline..."
+        placeholder={t('contact.form.placeholder.message')}
         rows={4}
       />
 
       {/* Email info - subtle and informational */}
       <div className="text-sm text-neo-gray-light font-bold font-body !mt-1">
-        Or email us directly at{' '}
-        <a 
-          href="mailto:hello@neopress.dev" 
-          className="font-bold text-bold-pink hover:underline"
-        >
-          hello@neopress.dev
-        </a>
+        {(() => {
+          const text = t('contact.form.emailAlternative');
+          const email = 'hello@neopress.dev';
+          const parts = text.split(email);
+          return (
+            <>
+              {parts[0]}
+              <a 
+                href="mailto:hello@neopress.dev" 
+                className="text-bold-pink hover:underline"
+              >
+                {email}
+              </a>
+              {parts[1]}
+            </>
+          );
+        })()}
       </div>
 
       <Button type="submit" fullWidth disabled={isSubmitting} variant="vibrant-pink" className="py-3 text-[18px]">
-        {isSubmitting ? 'Sending...' : 'Submit'}
+        {isSubmitting ? t('contact.form.submitting') : t('contact.form.submit')}
       </Button>
     </form>
   );

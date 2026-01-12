@@ -1,37 +1,63 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Section, Button } from '../components/ui';
 import ContactForm from '../components/ContactForm';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useLanguage } from '../hooks/useLanguage';
 
-const faqs = [
+declare global {
+  interface Window {
+    Cal: any;
+  }
+}
+
+const getFaqs = (t: (key: string) => string) => [
   {
-    question: 'What does your typical process look like?',
-    answer: 'Every project starts with a Discovery phase where we understand your goals, constraints, and requirements. From there, we move through UX/UI planning, iterative development with regular check-ins, thorough QA and testing, and finally launch with post-launch support.',
+    question: t('faq.q1.question'),
+    answer: t('faq.q1.answer'),
   },
   {
-    question: 'How long does a typical WordPress project take?',
-    answer: 'Timeline depends on scope. A focused landing page might take 2-3 weeks. A full custom WordPress site typically ranges from 4-8 weeks. Complex implementations can take 8-12+ weeks.',
+    question: t('faq.q2.question'),
+    answer: t('faq.q2.answer'),
   },
   {
-    question: 'What\'s your approach to project pricing?',
-    answer: 'We offer both fixed-scope projects and retainer-based engagements. Fixed-scope works well for clearly defined builds. Retainers are better for ongoing partnerships or projects with evolving scope.',
+    question: t('faq.q3.question'),
+    answer: t('faq.q3.answer'),
   },
   {
-    question: 'Do you work with existing WordPress sites?',
-    answer: 'Absolutely. We regularly take over maintenance of existing sites, optimize underperforming WordPress installations, and incrementally improve legacy builds.',
+    question: t('faq.q4.question'),
+    answer: t('faq.q4.answer'),
   },
   {
-    question: 'What happens after the site launches?',
-    answer: 'Every project includes a post-launch support period (typically 2-4 weeks). For ongoing maintenance, we offer retainer packages that include updates, security monitoring, and priority support.',
+    question: t('faq.q5.question'),
+    answer: t('faq.q5.answer'),
   },
 ];
 
 export default function ContactPage() {
   useDocumentTitle('Contact');
   const mainRef = useScrollReveal<HTMLDivElement>();
+  const { t } = useLanguage();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const faqs = getFaqs(t);
+  
+  // Initialize Cal.com embed
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !window.Cal) {
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.innerHTML = `
+        (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+        Cal("init", "15min", {origin:"https://app.cal.com"});
+        Cal.ns["15min"]("ui", {"cssVarsPerTheme":{"light":{"cal-brand":"#FF2D95"},"dark":{"cal-brand":"#FF2D95"}},"hideEventTypeDetails":false,"layout":"month_view"});
+      `;
+      document.head.appendChild(script);
+    } else if (window.Cal) {
+      window.Cal("init", "15min", {origin:"https://app.cal.com"});
+      window.Cal.ns["15min"]("ui", {"cssVarsPerTheme":{"light":{"cal-brand":"#FF2D95"},"dark":{"cal-brand":"#FF2D95"}},"hideEventTypeDetails":false,"layout":"month_view"});
+    }
+  }, []);
 
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index);
@@ -56,7 +82,12 @@ export default function ContactPage() {
           {/* Form */}
           <div className="reveal bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-6 md:p-8 rounded-[10px]">
             <h3 className="font-display font-black text-2xl md:text-3xl mb-4 text-center">
-              Send us a <span className="bg-bold-pink text-white px-2 border-3 border-neo-black shadow-neo-sm">Message</span>
+              {t('contact.form.title').split(t('contact.form.title.highlight')).map((part, i) => (
+                <React.Fragment key={i}>
+                  {part}
+                  {i === 0 && <span className="bg-bold-pink text-white px-2 border-3 border-neo-black shadow-neo-sm">{t('contact.form.title.highlight')}</span>}
+                </React.Fragment>
+              ))}
             </h3>
             <ContactForm />
           </div>
@@ -64,15 +95,15 @@ export default function ContactPage() {
           {/* Scheduling Section */}
           <div className="reveal bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-6 md:p-8 rounded-[10px]">
             <h3 className="font-display font-black text-2xl md:text-3xl mb-4 text-center">
-              Book a <span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm">Call</span>
+               Book a <span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm">Call</span>
             </h3>
-            <p className="font-body text-base md:text-lg text-neo-black mb-6 font-bold">
-              Prefer to discuss your project in a call? Book a time that works for you.
+            <p className="font-body text-base md:text-lg text-neo-black mb-6 mt-11 font-bold whitespace-pre-line">
+              Prefer to discuss your project in a call?{'\n'}Book a time that works for you.
             </p>
             <Button
               variant="bold-blue"
               size="lg"
-              className="w-full"
+              className="w-full text-[18px]"
               data-cal-link="igordjuric/15min"
               data-cal-namespace="15min"
               data-cal-config='{"layout":"month_view","theme":"light"}'
@@ -86,9 +117,8 @@ export default function ContactPage() {
       {/* FAQ Section */}
       <Section>
         <div className="text-center mb-8 md:mb-10">
-          <h2 className="reveal font-display font-bold text-2xl md:text-4xl mb-4">
-            <span className="whitespace-nowrap">Frequently Asked</span>{' '}
-            <span className="bg-bold-purple text-white px-2 border-3 border-neo-black shadow-neo-sm whitespace-nowrap">Questions</span>
+          <h2 className="reveal font-display font-bold text-2xl md:text-4xl mb-16">
+            <span className="bg-bold-purple text-white px-2 border-3 border-neo-black shadow-neo-sm whitespace-nowrap">{t('faq.title')}</span>
           </h2>
         </div>
         

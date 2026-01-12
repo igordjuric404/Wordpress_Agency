@@ -1,9 +1,6 @@
 import { Link } from 'react-router-dom';
-import { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, Fragment } from 'react';
 import { 
-  Zap, 
-  Shield, 
-  Clock, 
   ArrowRight,
   Star,
   Target,
@@ -16,43 +13,59 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import ContactForm from '../components/ContactForm';
 import AnimatedUnderline from '../components/AnimatedUnderline';
+import EditableText from '../components/EditableText';
+import { useLanguage } from '../hooks/useLanguage';
+
+declare global {
+  interface Window {
+    Cal: any;
+  }
+}
 
 const processSteps = [
   {
     number: '01',
-    title: 'Discovery',
-    description: 'We learn your business, goals, and constraints through structured conversations.',
     icon: Target,
   },
   {
     number: '02',
-    title: 'UX/UI Planning',
-    description: 'Information architecture, wireframes, and design direction established.',
     icon: Star,
   },
   {
     number: '03',
-    title: 'Development',
-    description: 'Clean, performance-first code built in iterative sprints with regular demos.',
-    icon: Zap,
+    icon: Sparkles,
   },
   {
     number: '04',
-    title: 'QA & Launch',
-    description: 'Thorough testing across devices, accessibility audit, and smooth deployment.',
-    icon: Shield,
+    icon: Target,
   },
   {
     number: '05',
-    title: 'Care & Iteration',
-    description: 'Post-launch support, monitoring, and continuous improvements.',
-    icon: Sparkles,
+    icon: Star,
   },
 ];
 
 export default function HomePage() {
   useDocumentTitle('');
   const mainRef = useScrollReveal<HTMLDivElement>();
+  
+  // Initialize Cal.com embed
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !window.Cal) {
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.innerHTML = `
+        (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+        Cal("init", "15min", {origin:"https://app.cal.com"});
+        Cal.ns["15min"]("ui", {"cssVarsPerTheme":{"light":{"cal-brand":"#FF2D95"},"dark":{"cal-brand":"#FF2D95"}},"hideEventTypeDetails":false,"layout":"month_view"});
+      `;
+      document.head.appendChild(script);
+    } else if (window.Cal) {
+      window.Cal("init", "15min", {origin:"https://app.cal.com"});
+      window.Cal.ns["15min"]("ui", {"cssVarsPerTheme":{"light":{"cal-brand":"#FF2D95"},"dark":{"cal-brand":"#FF2D95"}},"hideEventTypeDetails":false,"layout":"month_view"});
+    }
+  }, []);
+  const { t, language } = useLanguage();
   const [isMobile, setIsMobile] = useState(false);
   const [serviceUnderlineActive, setServiceUnderlineActive] = useState<boolean[]>(
     () => services.map(() => false)
@@ -122,36 +135,112 @@ export default function HomePage() {
       <section className="relative overflow-hidden h-[calc(100vh-4rem-4px)] md:h-[calc(100vh-6rem-4px)]">
         <div className="neo-container h-full flex items-center py-6 md:py-8">
           <div className="max-w-4xl">
-            <h1 className="reveal font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-10 md:mb-5 relative">
-              <span className="font-sora">Expert WordPress Solutions for Growing Businesses</span>
+            <h1 className="reveal font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white mb-10 md:mb-5 relative" style={{ lineHeight: '1.2' }}>
+              <span className="font-sora whitespace-pre-line">
+                <EditableText copyKey="hero.title" as="span">
+                  {(() => {
+                    const title = t('hero.title');
+                    const lines = title.split('\n');
+                    
+                    // Determine which word to highlight based on language
+                    const highlightWords: Record<string, string> = {
+                      'en': 'Sell',
+                      'sr': 'Zaradite',
+                      'ru': 'Продавать'
+                    };
+                    const highlightWord = highlightWords[language] || '';
+                    
+                    if (lines.length === 3 && highlightWord) {
+                      return (
+                        <>
+                          {lines[0]}
+                          {'\n'}
+                          {lines[1]}
+                          {'\n'}
+                          <span style={{ display: 'block', marginTop: '0.2em' }}>
+                            {lines[2].split(highlightWord).map((part, i, arr) => (
+                              <Fragment key={i}>
+                                {part}
+                                {i < arr.length - 1 && (
+                                  <span 
+                                    className="bg-bold-yellow text-white px-2 border-3 border-neo-black font-display font-bold font-sora zaradite-highlight" 
+                                    style={{ 
+                                      textShadow: 'none',
+                                      WebkitTextStroke: '3px #111111',
+                                      paintOrder: 'stroke fill',
+                                      filter: 'none'
+                                    }}
+                                  >
+                                    {highlightWord}
+                                  </span>
+                                )}
+                              </Fragment>
+                            ))}
+                          </span>
+                        </>
+                      );
+                    }
+                    return title;
+                  })()}
+                </EditableText>
+              </span>
             </h1>
             <p className="reveal font-body text-base md:text-lg lg:text-xl text-neo-gray-dark mb-5 md:mb-6 max-w-2xl">
-              We craft scalable, high-performance websites to drive your success.
+              <EditableText copyKey="hero.subtitle" as="span" className="whitespace-pre-line">
+                {(() => {
+                  const subtitle = t('hero.subtitle');
+                  const lines = subtitle.split('\n');
+                  if (lines.length === 2) {
+                    const firstLine = lines[0];
+                    const secondLine = lines[1];
+                    
+                    // Define phrases to highlight for each language (without "and")
+                    let phrase1 = '';
+                    let phrase2 = '';
+                    let conjunction = '';
+                    if (language === 'en') {
+                      phrase1 = 'more customers';
+                      conjunction = ' and ';
+                      phrase2 = 'more revenue';
+                    } else if (language === 'sr') {
+                      phrase1 = 'više kupaca';
+                      conjunction = ' i ';
+                      phrase2 = 'veći prihod';
+                    } else if (language === 'ru') {
+                      phrase1 = 'большего количества клиентов';
+                      conjunction = ' и ';
+                      phrase2 = 'увеличения дохода';
+                    }
+                    
+                    // Split second line and highlight each phrase separately
+                    const fullPhrase = phrase1 + conjunction + phrase2;
+                    const parts = secondLine.split(fullPhrase);
+                    if (parts.length === 2) {
+                      return (
+                        <>
+                          {firstLine}
+                          {'\n'}
+                          {parts[0]}
+                          <span className="text-bold-pink font-bold">{phrase1}</span>
+                          {conjunction}
+                          <span className="text-bold-pink font-bold">{phrase2}</span>
+                          {parts[1]}
+                        </>
+                      );
+                    }
+                  }
+                  return subtitle;
+                })()}
+              </EditableText>
             </p>
-            
-            {/* Metric bullets */}
-            <div className="reveal space-y-2 md:space-y-3 mb-6 md:mb-8">
-              <div className="flex items-start gap-2 md:gap-3">
-                <Zap className="w-5 h-5 md:w-6 md:h-6 text-bold-yellow fill-bold-yellow flex-shrink-0 mt-0.5" />
-                <span className="font-body font-bold text-sm md:text-base">Up to 50–60% faster load times with performance-first builds</span>
-              </div>
-              <div className="flex items-start gap-2 md:gap-3">
-                <Shield className="w-5 h-5 md:w-6 md:h-6 text-bold-green fill-bold-green flex-shrink-0 mt-0.5" />
-                <span className="font-body font-bold text-sm md:text-base">Accessibility-aligned UI patterns (WCAG-ready foundations)</span>
-              </div>
-              <div className="flex items-start gap-2 md:gap-3">
-                <Clock className="w-5 h-5 md:w-6 md:h-6 text-bold-purple fill-bold-purple flex-shrink-0 mt-0.5" />
-                <span className="font-body font-bold text-sm md:text-base">Launch-ready in weeks, not months (scope-dependent)</span>
-              </div>
-            </div>
             
             {/* CTAs */}
             <div className="reveal flex flex-col items-center sm:items-start sm:flex-row gap-3 md:gap-4">
               <Button to="/services" variant="bold-pink" size="lg" className="text-[18px]">
-                Explore services
+                {t('hero.cta.services')}
               </Button>
               <Button to="/contact" variant="bold-blue" size="lg" className="text-[18px]">
-                Contact us
+                {t('hero.cta.contact')}
               </Button>
             </div>
           </div>
@@ -161,8 +250,10 @@ export default function HomePage() {
       {/* Services Overview */}
       <Section id="services-overview" className="pb-16 md:pb-16">
           <div className="text-center mb-8 md:mb-10">
-            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-4 text-white relative">
-              <span className="font-sora">Our </span><span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Services</span>
+            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
+              <span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>
+                <EditableText copyKey="services.title" as="span">{t('services.title')}</EditableText>
+              </span>
             </h2>
           </div>
         
@@ -203,17 +294,21 @@ export default function HomePage() {
                       color={underline}
                       forceActive={isMobile ? serviceUnderlineActive[index] : undefined}
                     >
-                      {service.title.split('\n').map((line, i) => (
-                        <span key={i}>
-                          {line}
-                          {i < service.title.split('\n').length - 1 && <br />}
-                        </span>
-                      ))}
+                      <EditableText copyKey={`services.${service.id}.title`} as="span">
+                        {t(`services.${service.id}.title`).split('\n').map((line, i, arr) => (
+                          <span key={i}>
+                            {line}
+                            {i < arr.length - 1 && <br />}
+                          </span>
+                        ))}
+                      </EditableText>
                     </AnimatedUnderline>
                   </h3>
                 </div>
                 <p className="font-body text-sm md:text-base text-neo-black leading-relaxed flex-grow">
-                  {service.shortDescription}
+                  <EditableText copyKey={`services.${service.id}.description`} as="span">
+                    {t(`services.${service.id}.description`)}
+                  </EditableText>
                 </p>
               </Card>
             );
@@ -224,13 +319,14 @@ export default function HomePage() {
       {/* Process Section */}
       <Section id="process" className="py-16 md:py-16">
           <div className="text-center mb-8 md:mb-10">
-            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-4 text-white relative">
-              <span className="font-sora">How </span><span className="bg-bold-purple text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>We Work</span>
+            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
+              <span className="bg-bold-purple text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>{t('process.title')}</span>
             </h2>
           </div>
         
         <div className="space-y-4 md:space-y-5 max-w-4xl mx-auto">
           {processSteps.map((step, index) => {
+            const stepKey = `process.step.${index + 1}`;
             // Unified color pairs: card background matches number badge color
             const colorPairs: { badge: string; card: 'soft-pink' | 'soft-green' | 'soft-blue' | 'soft-purple' | 'soft-yellow' }[] = [
               { badge: 'bg-bold-pink', card: 'soft-pink' },
@@ -253,8 +349,8 @@ export default function HomePage() {
                   background={cardBg}
                   className="flex-1 p-3 md:p-5"
                 >
-                  <h3 className="font-display font-bold text-lg md:text-2xl mb-2 md:mb-3">{step.title}</h3>
-                  <p className="font-body text-sm md:text-lg text-neo-black">{step.description}</p>
+                  <h3 className="font-display font-bold text-lg md:text-2xl mb-2 md:mb-3">{t(`${stepKey}.title`)}</h3>
+                  <p className="font-body text-sm md:text-lg text-neo-black">{t(`${stepKey}.description`)}</p>
                 </Card>
               </div>
             );
@@ -317,12 +413,9 @@ export default function HomePage() {
       {/* Blog Teaser */}
       <Section id="blog" className="py-12 md:py-16">
           <div className="text-center mb-6 md:mb-10">
-            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-4 text-white relative">
-              <span className="bg-bold-yellow text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Blog</span>
+            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
+              <span className="bg-bold-yellow text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>{t('blog.title')}</span>
             </h2>
-            <p className="reveal font-body text-base md:text-lg text-neo-black max-w-2xl mx-auto">
-              Practical tips on WordPress development, performance, and security.
-            </p>
           </div>
         
         {/* Blog cards - hidden on mobile */}
@@ -362,12 +455,12 @@ export default function HomePage() {
         <div className="text-center mt-8 md:mt-12">
           {/* Mobile: different CTA text */}
           <Button to="/blog" variant="vibrant-yellow" className="md:hidden text-[18px]">
-            Read Our Articles
+            {t('blog.cta.mobile')}
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
           {/* Desktop: original CTA */}
           <Button to="/blog" variant="vibrant-yellow" className="hidden md:inline-flex text-[18px]">
-            View All Posts
+            {t('blog.cta.desktop')}
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
         </div>
@@ -380,14 +473,14 @@ export default function HomePage() {
         
         <div className="neo-container relative z-10 text-center">
           <h2 className="reveal font-display font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white mb-6 max-w-4xl mx-auto">
-            Ready to build a <span className="text-bold-yellow italic">faster</span>, smarter WordPress site?
+            {t('cta.title')}
           </h2>
           <p className="reveal font-body text-base md:text-lg text-white/90 max-w-3xl mx-auto mb-8 font-medium">
-            Let's discuss your project and explore how we can help you achieve your goals.
+            {t('cta.description')}
           </p>
           <div className="reveal">
-            <Button to="/services" variant="bold-yellow" size="lg" className="text-[18px]">
-              See Services
+            <Button to="/contact" variant="bold-yellow" size="lg" className="text-[18px]">
+              {t('cta.button.contact')}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </div>
@@ -397,7 +490,7 @@ export default function HomePage() {
       {/* Contact Section */}
       <Section id="contact" className="py-16 md:py-16">
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-4 text-white relative">
+            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
               <span className="font-sora">Contact </span><span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Us</span>
             </h2>
           </div>
@@ -415,8 +508,8 @@ export default function HomePage() {
             <h3 className="font-display font-black text-2xl md:text-3xl mb-4 text-center">
                Book a <span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm">Call</span>
             </h3>
-            <p className="font-body text-base md:text-lg text-neo-black mb-6 mt-11 font-bold">
-              Prefer to discuss your project in a call? Book a time that works for you.
+            <p className="font-body text-base md:text-lg text-neo-black mb-6 mt-11 font-bold whitespace-pre-line">
+              Prefer to discuss your project in a call?{'\n'}Book a time that works for you.
             </p>
             <Button
               variant="bold-blue"

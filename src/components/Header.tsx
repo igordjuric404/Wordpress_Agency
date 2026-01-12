@@ -1,13 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, startTransition } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Button from './ui/Button';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useLanguage } from '../hooks/useLanguage';
 
 const navLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'Services', path: '/services' },
-  { name: 'About', path: '/about' },
-  { name: 'Blog', path: '/blog' },
-  { name: 'Contact', path: '/contact' },
+  { key: 'home', path: '/' },
+  { key: 'services', path: '/services' },
+  { key: 'about', path: '/about' },
+  { key: 'blog', path: '/blog' },
+  { key: 'contact', path: '/contact' },
 ];
 
 export default function Header() {
@@ -15,11 +17,20 @@ export default function Header() {
   const [isAnimating, setIsAnimating] = useState(false);
   const location = useLocation();
   const burgerRef = useRef<HTMLButtonElement>(null);
+  const prevPathnameRef = useRef(location.pathname);
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Close mobile menu on route change
+    if (prevPathnameRef.current !== location.pathname) {
+      prevPathnameRef.current = location.pathname;
+      if (isMenuOpen) {
+        startTransition(() => {
     setIsMenuOpen(false);
-  }, [location]);
+        });
+      }
+    }
+  }, [location.pathname, isMenuOpen]);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -54,7 +65,8 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <ul className="hidden md:flex items-center gap-2" role="menubar">
+          <div className="hidden md:flex items-center gap-2">
+            <ul className="flex items-center gap-2" role="menubar">
             {navLinks.map((link, index) => {
               const hoverBgs = ['hover:bg-bold-pink', 'hover:bg-bold-green', 'hover:bg-bold-yellow', 'hover:bg-bold-blue', 'hover:bg-bold-purple'];
               const hoverBg = hoverBgs[index % hoverBgs.length];
@@ -72,12 +84,16 @@ export default function Header() {
                         : `bg-white text-neo-black ${hoverBg} hover:text-white`
                       }`}
                   >
-                    {link.name}
+                      {t(`nav.${link.key}`)}
                   </Button>
                 </li>
               );
             })}
+            <li role="none">
+              <LanguageSwitcher />
+            </li>
           </ul>
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -116,10 +132,13 @@ export default function Header() {
       {/* Mobile Menu */}
       <div
         id="mobile-menu"
-        className={`md:hidden fixed right-0 top-[64px] bottom-0 w-[250px] z-40 transform transition-transform duration-300 ease-out ${
+        className={`md:hidden fixed right-0 bottom-0 w-[250px] z-40 transform transition-transform duration-300 ease-out ${
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
-        style={{ backgroundColor: '#fcfbf5' }}
+        style={{ 
+          backgroundColor: '#fcfbf5',
+          top: '68px' // h-16 (64px) + border-bottom (4px)
+        }}
         aria-hidden={!isMenuOpen}
       >
         <nav className="flex flex-col p-8" role="navigation" aria-label="Mobile navigation">
@@ -139,11 +158,14 @@ export default function Header() {
                       }`}
                     style={{ width: '100%' }}
                   >
-                    {link.name}
+                    {t(`nav.${link.key}`)}
                   </Button>
                 </li>
               );
             })}
+            <li className="w-full">
+              <LanguageSwitcher />
+            </li>
           </ul>
         </nav>
       </div>
@@ -151,7 +173,8 @@ export default function Header() {
       {/* Overlay */}
       {isMenuOpen && (
         <div 
-          className="md:hidden fixed inset-0 top-[65px] bg-black/20 z-30"
+          className="md:hidden fixed inset-0 bg-black/20 z-30"
+          style={{ top: '68px' }}
           onClick={() => setIsMenuOpen(false)}
           aria-hidden="true"
         />
