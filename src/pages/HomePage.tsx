@@ -150,7 +150,7 @@ export default function HomePage() {
             {/* Header - First */}
             <ScrollReveal animation="slam" delay={0} margin="100%">
               <h1 className="font-extrabold text-[42px] sm:text-5xl md:text-6xl lg:text-6xl text-white mb-6 md:mb-8 relative tracking-tighter" style={{ lineHeight: '1.1' }}>
-              <span className="font-sora whitespace-pre-line">
+              <span className="whitespace-pre-line">
                 <EditableText copyKey="hero.title" as="span">
                   {(() => {
                     const title = t('hero.title');
@@ -167,14 +167,14 @@ export default function HomePage() {
                     if (lines.length === 3 && highlightWord) {
                       return (
                         <>
-                          {lines[0]}
+                          <span className="font-sora">{lines[0]}</span>
                           {'\n'}
-                          {lines[1]}
+                          <span className="font-sora">{lines[1]}</span>
                           {'\n'}
                           <span style={{ display: 'block', marginTop: '0.2em' }}>
                             {lines[2].split(highlightWord).map((part, i, arr) => (
                               <Fragment key={i}>
-                                <span>{part}</span>
+                                <span className="font-sora">{part}</span>
                                 {i < arr.length - 1 && (
                                   <span 
                                     className="bg-bold-yellow text-white px-2 border-3 border-neo-black font-display font-bold font-sora zaradite-highlight" 
@@ -194,7 +194,7 @@ export default function HomePage() {
                         </>
                       );
                     }
-                    return title;
+                    return <span className="font-sora">{title}</span>;
                   })()}
                 </EditableText>
               </span>
