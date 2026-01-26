@@ -174,7 +174,7 @@ export default function HomePage() {
                           <span style={{ display: 'block', marginTop: '0.2em' }}>
                             {lines[2].split(highlightWord).map((part, i, arr) => (
                               <Fragment key={i}>
-                                {part}
+                                <span>{part}</span>
                                 {i < arr.length - 1 && (
                                   <span 
                                     className="bg-bold-yellow text-white px-2 border-3 border-neo-black font-display font-bold font-sora zaradite-highlight" 
