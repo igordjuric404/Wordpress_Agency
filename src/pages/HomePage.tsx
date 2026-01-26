@@ -9,7 +9,7 @@ import {
 import { Button, Card, Section } from '../components/ui';
 import { services } from '../data/services';
 import { blogPosts } from '../data/blog';
-import { useScrollReveal } from '../hooks/useScrollReveal';
+import ScrollReveal, { StaggerContainer, StaggerItem } from '../components/ScrollReveal';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import ContactForm from '../components/ContactForm';
 import AnimatedUnderline from '../components/AnimatedUnderline';
@@ -18,6 +18,7 @@ import { useLanguage } from '../hooks/useLanguage';
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Cal: any;
   }
 }
@@ -47,7 +48,6 @@ const processSteps = [
 
 export default function HomePage() {
   useDocumentTitle('');
-  const mainRef = useScrollReveal<HTMLDivElement>();
   
   // Initialize Cal.com embed
   useEffect(() => {
@@ -130,12 +130,25 @@ export default function HomePage() {
   }, [isMobile, cardRefs]);
 
   return (
-    <div ref={mainRef}>
+    <div>
       {/* Hero Section */}
-      <section className="relative overflow-hidden h-[calc(100vh-4rem-4px)] md:h-[calc(100vh-6rem-4px)]">
-        <div className="neo-container h-full flex items-center py-6 md:py-8">
-          <div className="max-w-4xl">
-            <h1 className="reveal font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white mb-10 md:mb-5 relative" style={{ lineHeight: '1.2' }}>
+      <section className="relative overflow-hidden min-h-[calc(100vh-4rem-4px)] md:min-h-[calc(100vh-6rem-4px)] flex items-center">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative w-full">
+          {/* Hero Image - Absolute positioned on desktop */}
+          <div className="hidden lg:block absolute right-20 bottom-0 w-[45%] max-w-[500px] z-0 pointer-events-none">
+            <ScrollReveal animation="pop" delay={0.6}>
+              <img 
+                src="/hero-visual.png" 
+                alt="Hero illustration" 
+                className="w-full h-auto object-contain drop-shadow-2xl"
+              />
+            </ScrollReveal>
+          </div>
+
+          {/* Content - Full width on all screens */}
+          <div className="relative z-10 max-w-4xl">
+            <ScrollReveal animation="slam">
+              <h1 className="font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white mb-6 md:mb-8 relative" style={{ lineHeight: '1.2' }}>
               <span className="font-sora whitespace-pre-line">
                 <EditableText copyKey="hero.title" as="span">
                   {(() => {
@@ -184,8 +197,10 @@ export default function HomePage() {
                   })()}
                 </EditableText>
               </span>
-            </h1>
-            <p className="reveal font-body text-base md:text-lg lg:text-xl text-neo-gray-dark mb-5 md:mb-6 max-w-2xl">
+              </h1>
+            </ScrollReveal>
+            <ScrollReveal animation="snap" delay={0.15}>
+              <p className="font-body text-base md:text-lg lg:text-xl text-neo-gray-dark mb-6 md:mb-8 max-w-2xl">
               <EditableText copyKey="hero.subtitle" as="span" className="whitespace-pre-line">
                 {(() => {
                   const subtitle = t('hero.subtitle');
@@ -232,16 +247,21 @@ export default function HomePage() {
                   return subtitle;
                 })()}
               </EditableText>
-            </p>
+              </p>
+            </ScrollReveal>
             
             {/* CTAs */}
-            <div className="reveal flex flex-col items-center sm:items-start sm:flex-row gap-3 md:gap-4">
-              <Button to="/services" variant="bold-pink" size="lg" className="text-[18px]">
-                {t('hero.cta.services')}
-              </Button>
-              <Button to="/contact" variant="bold-blue" size="lg" className="text-[18px]">
-                {t('hero.cta.contact')}
-              </Button>
+            <div className="flex flex-col items-center sm:items-start sm:flex-row gap-3 md:gap-4">
+              <ScrollReveal animation="bounce" delay={0.3}>
+                <Button to="/services" variant="bold-pink" size="lg" className="text-[18px]">
+                  {t('hero.cta.services')}
+                </Button>
+              </ScrollReveal>
+              <ScrollReveal animation="bounce" delay={0.45}>
+                <Button to="/contact" variant="bold-blue" size="lg" className="text-[18px]">
+                  {t('hero.cta.contact')}
+                </Button>
+              </ScrollReveal>
             </div>
           </div>
         </div>
@@ -250,14 +270,14 @@ export default function HomePage() {
       {/* Services Overview */}
       <Section id="services-overview" className="pb-16 md:pb-16">
           <div className="text-center mb-8 md:mb-10">
-            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
-              <span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>
-                <EditableText copyKey="services.title" as="span">{t('services.title')}</EditableText>
-              </span>
-            </h2>
+            <ScrollReveal animation="pop" margin="-100px">
+              <h2 className="font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
+                <span className="font-sora">What We </span><span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Do</span>
+              </h2>
+            </ScrollReveal>
           </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto justify-center">
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto justify-center" staggerDelay={0.1}>
           {services.map((service, index) => {
             // Unified color pairs: card background matches icon color
             // Underline colors use complementary colors for best contrast
@@ -275,16 +295,20 @@ export default function HomePage() {
             ];
             const { bg, icon: color, underline } = colorPairs[index % colorPairs.length];
             const cardRef = cardRefs[index];
+            const animations: Array<'wiggle' | 'twist' | 'pop'> = ['wiggle', 'twist', 'pop'];
+            // Calculate delay based on position within row (0, 1, 2 for first row, 0, 1, 2 for second row)
+            const rowPosition = index % 3;
+            const itemDelay = rowPosition * 0.1;
             
             return (
-              <Card 
-                key={service.id} 
-                hoverable 
-                className="reveal p-4 md:p-6 flex flex-col h-full"
-                as="article"
-                background={bg}
-                ref={cardRef as React.Ref<HTMLElement>}
-              >
+              <StaggerItem key={service.id} animation={animations[index % animations.length]} useOwnViewport={true} delay={itemDelay} margin="-150px">
+                <Card 
+                  hoverable 
+                  className="p-4 md:p-6 flex flex-col h-full"
+                  as="article"
+                  background={bg}
+                  ref={cardRef as React.Ref<HTMLElement>}
+                >
                 {/* Mobile: icon + title side by side */}
                 <div className="flex items-center gap-3 md:block mb-2 md:mb-0">
                   <service.icon className={`w-10 h-10 md:w-12 md:h-12 ${color} flex-shrink-0 md:mb-4`} />
@@ -311,20 +335,23 @@ export default function HomePage() {
                   </EditableText>
                 </p>
               </Card>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       </Section>
 
       {/* Process Section */}
       <Section id="process" className="py-16 md:py-16">
           <div className="text-center mb-8 md:mb-10">
-            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
-              <span className="bg-bold-purple text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>{t('process.title')}</span>
-            </h2>
+            <ScrollReveal animation="pop" margin="-100px">
+              <h2 className="font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
+                <span className="font-sora">How We </span><span className="bg-bold-purple text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Work</span>
+              </h2>
+            </ScrollReveal>
           </div>
         
-        <div className="space-y-4 md:space-y-5 max-w-4xl mx-auto">
+        <StaggerContainer className="space-y-4 md:space-y-5 max-w-4xl mx-auto" staggerDelay={0.1}>
           {processSteps.map((step, index) => {
             const stepKey = `process.step.${index + 1}`;
             // Unified color pairs: card background matches number badge color
@@ -338,10 +365,8 @@ export default function HomePage() {
             const { badge: vibrantBg, card: cardBg } = colorPairs[index % colorPairs.length];
 
             return (
-              <div 
-                key={step.number}
-                className="reveal flex flex-row gap-3 md:gap-4 items-start"
-              >
+              <StaggerItem key={step.number} animation="snap" useOwnViewport={true}>
+                <div className="flex flex-row gap-3 md:gap-4 items-start">
                 <div className={`flex-shrink-0 w-12 h-12 md:w-16 md:h-16 ${vibrantBg} text-white border-2 border-neo-black shadow-neo-sm flex items-center justify-center font-display font-black text-lg md:text-2xl`}>
                   {step.number}
                 </div>
@@ -352,10 +377,11 @@ export default function HomePage() {
                   <h3 className="font-display font-bold text-lg md:text-2xl mb-2 md:mb-3">{t(`${stepKey}.title`)}</h3>
                   <p className="font-body text-sm md:text-lg text-neo-black">{t(`${stepKey}.description`)}</p>
                 </Card>
-              </div>
+                </div>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       </Section>
 
       {/* Portfolio Samples */}
@@ -413,22 +439,26 @@ export default function HomePage() {
       {/* Blog Teaser */}
       <Section id="blog" className="py-12 md:py-16">
           <div className="text-center mb-6 md:mb-10">
-            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
-              <span className="bg-bold-yellow text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>{t('blog.title')}</span>
-            </h2>
+            <ScrollReveal animation="pop" margin="-100px">
+              <h2 className="font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
+                <span className="bg-bold-yellow text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Blog</span>
+              </h2>
+            </ScrollReveal>
           </div>
         
         {/* Blog cards - hidden on mobile */}
-        <div className="hidden md:grid md:grid-cols-3 gap-4 md:gap-6">
+        <StaggerContainer className="hidden md:grid md:grid-cols-3 gap-4 md:gap-6" staggerDelay={0.1}>
           {blogPosts.slice(0, 3).map((post, index) => {
             const cardBgs: ('soft-pink' | 'soft-yellow' | 'soft-blue' | 'soft-purple' | 'white')[] = ['soft-purple', 'soft-pink', 'soft-yellow'];
             const cardBg = cardBgs[index % cardBgs.length];
             const vibrantText = ['text-bold-pink', 'text-bold-blue', 'text-bold-purple'];
             const textColor = vibrantText[index % vibrantText.length];
+            const animations: Array<'pop' | 'wiggle' | 'twist'> = ['pop', 'wiggle', 'twist'];
 
             return (
-              <Link key={post.slug} to={`/blog/${post.slug}`} className="block">
-                <Card hoverable className="reveal flex flex-col h-full" as="article" background={cardBg}>
+              <StaggerItem key={post.slug} animation={animations[index % animations.length]}>
+                <Link to={`/blog/${post.slug}`} className="block h-full">
+                  <Card hoverable className="flex flex-col h-full" as="article" background={cardBg}>
                   <div className="aspect-video bg-white border-3 border-neo-black mb-4 flex items-center justify-center shadow-neo-sm">
                     <span className={`font-display font-black ${textColor} text-xl text-center px-4 line-clamp-3`}>
                       {post.title}
@@ -447,12 +477,14 @@ export default function HomePage() {
                     <ArrowRight className="w-5 h-5" />
                   </div>
                 </Card>
-              </Link>
+                </Link>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
         
-        <div className="text-center mt-8 md:mt-12">
+        <ScrollReveal animation="bounce" delay={0.2}>
+          <div className="text-center mt-8 md:mt-12">
           {/* Mobile: different CTA text */}
           <Button to="/blog" variant="vibrant-yellow" className="md:hidden text-[18px]">
             {t('blog.cta.mobile')}
@@ -463,7 +495,8 @@ export default function HomePage() {
             {t('blog.cta.desktop')}
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
-        </div>
+          </div>
+        </ScrollReveal>
       </Section>
 
       {/* CTA Band */}
@@ -472,39 +505,48 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-bold-blue/20 rounded-full blur-3xl -ml-32 -mb-32"></div>
         
         <div className="neo-container relative z-10 text-center">
-          <h2 className="reveal font-display font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white mb-6 max-w-4xl mx-auto">
-            {t('cta.title')}
-          </h2>
-          <p className="reveal font-body text-base md:text-lg text-white/90 max-w-3xl mx-auto mb-8 font-medium">
-            {t('cta.description')}
-          </p>
-          <div className="reveal">
+          <ScrollReveal animation="pop" margin="-100px">
+            <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white mb-6 max-w-4xl mx-auto">
+              {t('cta.title')}
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal animation="pop" delay={0.1} margin="-100px">
+            <p className="font-body text-base md:text-lg text-white/90 max-w-3xl mx-auto mb-8 font-medium">
+              {t('cta.description')}
+            </p>
+          </ScrollReveal>
+          <ScrollReveal animation="pop" delay={0.2} margin="-100px">
             <Button to="/contact" variant="bold-yellow" size="lg" className="text-[18px]">
               {t('cta.button.contact')}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Contact Section */}
       <Section id="contact" className="py-16 md:py-16">
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="reveal font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
-              <span className="font-sora">Contact </span><span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Us</span>
-            </h2>
+            <ScrollReveal animation="pop" margin="-100px">
+              <h2 className="font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
+                <span className="font-sora">Contact </span><span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Us</span>
+              </h2>
+            </ScrollReveal>
           </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start">
+        <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start" staggerDelay={0.15}>
           {/* Form on Left */}
-          <div className="reveal bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-6 md:p-8 rounded-[10px]">
+          <StaggerItem animation="wiggle">
+            <div className="bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-6 md:p-8 rounded-[10px]">
             <h3 className="font-display font-black text-2xl md:text-3xl mb-4 text-center">
               Send us a <span className="bg-bold-pink text-white px-2 border-3 border-neo-black shadow-neo-sm">Message</span>
             </h3>
             <ContactForm />
-          </div>
+            </div>
+          </StaggerItem>
           
           {/* Scheduling Section on Right */}
-          <div className="reveal bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-6 md:p-8 rounded-[10px]">
+          <StaggerItem animation="twist">
+            <div className="bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-6 md:p-8 rounded-[10px]">
             <h3 className="font-display font-black text-2xl md:text-3xl mb-4 text-center">
                Book a <span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm">Call</span>
             </h3>
@@ -521,8 +563,9 @@ export default function HomePage() {
             >
               Schedule a Call
             </Button>
-          </div>
-        </div>
+            </div>
+          </StaggerItem>
+        </StaggerContainer>
       </Section>
     </div>
   );

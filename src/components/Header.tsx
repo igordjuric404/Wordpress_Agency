@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, startTransition } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import Button from './ui/Button';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '../hooks/useLanguage';
@@ -15,10 +16,19 @@ const navLinks = [
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
   const location = useLocation();
   const burgerRef = useRef<HTMLButtonElement>(null);
   const prevPathnameRef = useRef(location.pathname);
   const { t } = useLanguage();
+
+  // Show header after hero content loads (0.75s delay after last hero element)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsHeaderVisible(true);
+    }, 750);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Close mobile menu on route change
@@ -50,50 +60,97 @@ export default function Header() {
   };
 
   return (
-    <header 
-      className="sticky top-0 z-50 relative"
+    <motion.header 
+      className="sticky top-0 z-50 relative overflow-visible"
+      initial={{ y: -200, opacity: 0 }}
+      animate={isHeaderVisible ? { y: 0, opacity: 1 } : { y: -200, opacity: 0 }}
+      transition={{
+        type: 'spring',
+        stiffness: 250,
+        damping: 22,
+        mass: 1,
+      }}
+      style={{
+        pointerEvents: isHeaderVisible ? 'auto' : 'none',
+      }}
     >
-      <div className="neo-container">
-        <nav className="flex items-center justify-between h-16 md:h-24" role="navigation" aria-label="Main navigation">
-          {/* Logo */}
-          <Link 
-            to="/" 
-            className="font-display font-black text-2xl md:text-4xl text-neo-black group transition-colors"
-            aria-label="NeoPress - Home"
-          >
-            Neo<span className="text-white bg-neo-black px-2 group-hover:bg-bold-pink transition-colors">Press</span>
-          </Link>
+      <div className="w-full">
+        <div className="neo-container">
+          <nav className="flex items-center justify-between h-16 md:h-24" role="navigation" aria-label="Main navigation">
+            {/* Logo */}
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={isHeaderVisible ? { scale: 1, opacity: 1 } : { scale: 0.85, opacity: 0 }}
+              transition={{
+                delay: 0.25,
+                type: 'spring',
+                stiffness: 400,
+                damping: 15,
+              }}
+            >
+              <Link 
+                to="/" 
+                className="font-display font-black text-2xl md:text-4xl text-neo-black group transition-colors"
+                aria-label="NeoPress - Home"
+              >
+                Neo<span className="text-white bg-neo-black px-2 group-hover:bg-bold-pink transition-colors">Press</span>
+              </Link>
+            </motion.div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-2">
-            <ul className="flex items-center gap-2" role="menubar">
-            {navLinks.map((link, index) => {
-              const hoverBgs = ['hover:bg-bold-pink', 'hover:bg-bold-green', 'hover:bg-bold-yellow', 'hover:bg-bold-blue', 'hover:bg-bold-purple'];
-              const hoverBg = hoverBgs[index % hoverBgs.length];
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-2">
+              <ul className="flex items-center gap-2" role="menubar">
+              {navLinks.map((link, index) => {
+                const hoverBgs = ['hover:bg-bold-pink', 'hover:bg-bold-green', 'hover:bg-bold-yellow', 'hover:bg-bold-blue', 'hover:bg-bold-purple'];
+                const hoverBg = hoverBgs[index % hoverBgs.length];
+                // Calculate delay: 0.4s for first button (0.25 logo + 0.15 gap), then +0.075s for each subsequent button
+                const buttonDelay = 0.4 + (index * 0.075);
 
-              return (
-                <li key={link.path} role="none">
-                  <Button
-                    to={link.path}
-                    variant="custom"
-                    size="md"
-                    role="menuitem"
-                    className={`!px-5 !py-2 uppercase tracking-wider transition-all duration-300
-                      ${isActive(link.path) 
-                        ? 'bg-bold-pink text-white' 
-                        : `bg-white text-neo-black ${hoverBg} hover:text-white`
-                      }`}
-                  >
-                      {t(`nav.${link.key}`)}
-                  </Button>
-                </li>
-              );
-            })}
-            <li role="none">
-              <LanguageSwitcher />
-            </li>
-          </ul>
-          </div>
+                return (
+                  <li key={link.path} role="none">
+                    <motion.div
+                      initial={{ scale: 0.85, opacity: 0 }}
+                      animate={isHeaderVisible ? { scale: 1, opacity: 1 } : { scale: 0.85, opacity: 0 }}
+                      transition={{
+                        delay: buttonDelay,
+                        type: 'spring',
+                        stiffness: 400,
+                        damping: 15,
+                      }}
+                    >
+                      <Button
+                        to={link.path}
+                        variant="custom"
+                        size="md"
+                        role="menuitem"
+                        className={`!px-5 !py-2 uppercase tracking-wider transition-all duration-300
+                          ${isActive(link.path) 
+                            ? 'bg-bold-pink text-white' 
+                            : `bg-white text-neo-black ${hoverBg} hover:text-white`
+                          }`}
+                      >
+                          {t(`nav.${link.key}`)}
+                      </Button>
+                    </motion.div>
+                  </li>
+                );
+              })}
+              <li role="none">
+                <motion.div
+                  initial={{ scale: 0.85, opacity: 0 }}
+                  animate={isHeaderVisible ? { scale: 1, opacity: 1 } : { scale: 0.85, opacity: 0 }}
+                  transition={{
+                    delay: 0.775,
+                    type: 'spring',
+                    stiffness: 400,
+                    damping: 15,
+                  }}
+                >
+                  <LanguageSwitcher />
+                </motion.div>
+              </li>
+            </ul>
+            </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -127,6 +184,7 @@ export default function Header() {
             </div>
           </button>
         </nav>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -179,7 +237,7 @@ export default function Header() {
           aria-hidden="true"
         />
       )}
-    </header>
+    </motion.header>
   );
 }
 

@@ -119,15 +119,15 @@ export default function ContactForm() {
     return (
       <div className="bg-soft-green border-2 md:border-3 border-neo-black p-6 md:p-8 text-center shadow-neo-vibrant-pink">
         <CheckCircle className="w-12 h-12 md:w-16 md:h-16 text-bold-pink mx-auto mb-3 md:mb-4" />
-        <h3 className="font-display font-black text-xl md:text-2xl mb-2 md:mb-3">Message Sent!</h3>
+        <h3 className="font-display font-black text-xl md:text-2xl mb-2 md:mb-3">{t('contact.form.success.title')}</h3>
         <p className="font-body text-sm md:text-base text-neo-black font-bold">
-          Thank you for reaching out. We'll get back to you within one business day.
+          {t('contact.form.success.message')}
         </p>
         <button
           onClick={() => setSubmitStatus('idle')}
           className="mt-4 md:mt-6 font-display font-black text-sm md:text-base text-neo-black hover:text-bold-pink transition-colors underline decoration-2 underline-offset-4"
         >
-          Send another message
+          {t('contact.form.success.sendAnother')}
         </button>
       </div>
     );
@@ -160,7 +160,7 @@ export default function ContactForm() {
       </div>
 
       <Input
-        label="Name"
+        label={t('contact.form.label.name')}
         name="name"
         type="text"
         value={formData.name}
@@ -172,7 +172,7 @@ export default function ContactForm() {
       />
 
       <Input
-        label="Email"
+        label={t('contact.form.label.email')}
         name="email"
         type="email"
         value={formData.email}
@@ -184,7 +184,7 @@ export default function ContactForm() {
       />
 
       <Dropdown
-        label="Service Interested In"
+        label={t('contact.form.label.service')}
         name="service"
         value={formData.service}
         onChange={handleChange('service')}
@@ -195,7 +195,7 @@ export default function ContactForm() {
       />
 
       <Textarea
-        label="Message"
+        label={t('contact.form.label.message')}
         name="message"
         value={formData.message}
         onChange={handleChange('message')}

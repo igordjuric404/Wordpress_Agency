@@ -55,6 +55,8 @@
   body {
     @apply font-body text-neo-black;
     background-color: #fcfbf5;
+    background-image: radial-gradient(circle, #d2d2d2 2px, transparent 1px);
+    background-size: 82px 82px;
     line-height: 1.6;
     cursor: url('/cursor.png') 2 0, auto;
   }
@@ -160,7 +162,7 @@
 @layer components {
   /* Container */
   .neo-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
   }
   
   /* Standard section padding */
@@ -192,7 +194,7 @@
     background-size: 82px 82px;
   }
 
-  /* Header - same color as body, black border */
+  /* Header - fully opaque */
   header {
     background-color: #fcfbf5 !important;
     background-image: none !important;
@@ -344,12 +346,10 @@
    ANIMATIONS
    =========================================== */
 
-/* Scroll reveal animation */
+/* Scroll reveal animation - DISABLED: elements are visible by default */
 .reveal {
-  opacity: 0;
-  /* Use the Transform Level 2 `translate` property so hover `transform` (via Tailwind) can still work. */
-  translate: 0 20px;
-  transition: opacity 0.6s ease-out, translate 0.6s ease-out;
+  opacity: 1;
+  translate: 0 0;
 }
 
 .reveal.visible {

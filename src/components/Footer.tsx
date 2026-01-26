@@ -3,7 +3,7 @@ import Button from './ui/Button';
 import { useLanguage } from '../hooks/useLanguage';
 
 // Custom X icon component
-const XIcon = ({ size = 28, strokeWidth: _strokeWidth, className = '' }: { size?: number; strokeWidth?: number; className?: string }) => (
+const XIcon = ({ size = 28, className = '' }: { size?: number; strokeWidth?: number; className?: string }) => (
   <svg
     role="img"
     viewBox="0 0 24 24"
@@ -22,7 +22,7 @@ const XIcon = ({ size = 28, strokeWidth: _strokeWidth, className = '' }: { size?
 );
 
 // Custom Instagram icon component
-const InstagramIcon = ({ size = 28, strokeWidth: _strokeWidth, className = '' }: { size?: number; strokeWidth?: number; className?: string }) => (
+const InstagramIcon = ({ size = 28, className = '' }: { size?: number; strokeWidth?: number; className?: string }) => (
   <svg
     role="img"
     viewBox="0 0 24 24"
@@ -41,7 +41,7 @@ const InstagramIcon = ({ size = 28, strokeWidth: _strokeWidth, className = '' }:
 );
 
 // Custom LinkedIn icon component
-const LinkedInIcon = ({ size = 28, strokeWidth: _strokeWidth, className = '' }: { size?: number; strokeWidth?: number; className?: string }) => (
+const LinkedInIcon = ({ size = 28, className = '' }: { size?: number; strokeWidth?: number; className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     x="0px"
@@ -61,10 +61,10 @@ const LinkedInIcon = ({ size = 28, strokeWidth: _strokeWidth, className = '' }: 
 );
 
 const quickLinks = [
-  { name: 'Services', path: '/services' },
-  { name: 'About', path: '/about' },
-  { name: 'Blog', path: '/blog' },
-  { name: 'Contact', path: '/contact' },
+  { key: 'services', path: '/services' },
+  { key: 'about', path: '/about' },
+  { key: 'blog', path: '/blog' },
+  { key: 'contact', path: '/contact' },
 ];
 
 const socialLinks = [
@@ -105,7 +105,7 @@ export default function Footer() {
                     to={link.path}
                     className="text-neo-black font-bold hover:text-bold-pink transition-colors"
                   >
-                    {link.name}
+                    {t(`nav.${link.key}`)}
                   </Link>
                 </li>
               ))}
@@ -157,7 +157,7 @@ export default function Footer() {
 
           {/* Social & Contact - desktop only */}
           <div className="hidden md:block">
-            <h3 className="font-display font-black text-lg mb-4 uppercase tracking-tight">Connect</h3>
+            <h3 className="font-display font-black text-lg mb-4 uppercase tracking-tight">{t('footer.connect')}</h3>
             <div className="flex gap-3">
               {socialLinks.map((social, index) => {
                 const vBgs = ['bg-bold-pink', 'bg-bold-green', 'bg-bold-blue'];

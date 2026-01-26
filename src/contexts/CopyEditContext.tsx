@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 
 interface CopyEditContextType {
   isEditMode: boolean;
@@ -43,7 +43,7 @@ export function CopyEditProvider({ children }: { children: ReactNode }) {
 
     // Format as structured text with better organization
     const formatted = textElements
-      .map(({ key, text, element }) => {
+      .map(({ key, text }) => {
         // Clean up text (remove extra whitespace, preserve line breaks)
         const cleanText = text.replace(/\s+/g, ' ').trim();
         return `${key}: ${cleanText}`;
@@ -85,6 +85,7 @@ export function CopyEditProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useCopyEdit() {
   const context = useContext(CopyEditContext);
   if (context === undefined) {

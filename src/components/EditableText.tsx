@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, ReactNode } from 'react';
+import React, { useState, useRef, useEffect, type ReactNode } from 'react';
 import { useCopyEdit } from '../contexts/CopyEditContext';
 
 interface EditableTextProps {
@@ -6,7 +6,7 @@ interface EditableTextProps {
   copyKey: string;
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'div';
   className?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export default function EditableText({
@@ -31,7 +31,7 @@ export default function EditableText({
     }
     if (Array.isArray(children)) {
       return children
-        .map((child: any) => {
+        .map((child: unknown) => {
           if (typeof child === 'string') return child;
           if (typeof child === 'number') return String(child);
           if (React.isValidElement(child)) return extractTextFromElement(child);
@@ -43,15 +43,16 @@ export default function EditableText({
   };
   
   const extractTextFromElement = (element: React.ReactElement): string => {
-    if (typeof element.props.children === 'string') {
-      return element.props.children;
+    const props = element.props as { children?: ReactNode };
+    if (typeof props.children === 'string') {
+      return props.children;
     }
-    if (typeof element.props.children === 'number') {
-      return String(element.props.children);
+    if (typeof props.children === 'number') {
+      return String(props.children);
     }
-    if (Array.isArray(element.props.children)) {
-      return element.props.children
-        .map((child: any) => {
+    if (Array.isArray(props.children)) {
+      return props.children
+        .map((child: unknown) => {
           if (typeof child === 'string') return child;
           if (typeof child === 'number') return String(child);
           if (React.isValidElement(child)) {
@@ -115,6 +116,7 @@ export default function EditableText({
         {...props}
       >
         <InputComponent
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ref={inputRef as any}
           type="text"
           value={localValue}

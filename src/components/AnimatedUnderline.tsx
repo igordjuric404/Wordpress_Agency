@@ -54,13 +54,13 @@ export default function AnimatedUnderline({ children, className = '', triggerRef
   // Track if we are currently "active" (drawn or drawing) to prevent redundant calls
   const isActiveRef = useRef(false);
 
-  const getRandomColor = () => {
+  const getRandomColor = useCallback(() => {
     return UNDERLINE_COLORS[Math.floor(Math.random() * UNDERLINE_COLORS.length)];
-  };
+  }, []);
 
-  const getColor = () => {
+  const getColor = useCallback(() => {
     return color || getRandomColor();
-  };
+  }, [color, getRandomColor]);
 
   // Logic to draw the underline
   const drawIn = useCallback(() => {
@@ -97,13 +97,12 @@ export default function AnimatedUnderline({ children, className = '', triggerRef
         ease: 'power2.inOut',
         onComplete: () => {
           enterTweenRef.current = null;
+          // Advance to next variant for next time AFTER animation completes
+          setCurrentVariantIndex((prev) => (prev + 1) % SVG_VARIANTS.length);
         },
       });
     }
-
-    // Advance to next variant for next time
-    setCurrentVariantIndex((prev) => (prev + 1) % SVG_VARIANTS.length);
-  }, [currentVariantIndex, color]);
+  }, [getColor, currentVariantIndex]); // Added getColor dependency, currentVariantIndex is needed for innerHTML
 
   // Logic to remove the underline
   const drawOut = useCallback(() => {
@@ -147,6 +146,10 @@ export default function AnimatedUnderline({ children, className = '', triggerRef
     if (typeof forceActive === 'boolean') {
         if (forceActive) {
             if (!isActiveRef.current) {
+                // Defer the drawIn call to avoid synchronous state update if it was causing issues,
+                // but since we moved setCurrentVariantIndex to onComplete, it might be fine now.
+                // However, to be safe and avoid "setState in effect" if onComplete fires immediately (it shouldn't for 0.5s duration),
+                // we can just call it. 
                 drawIn();
             }
         } else {

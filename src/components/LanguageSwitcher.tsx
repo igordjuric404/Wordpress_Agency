@@ -46,7 +46,7 @@ export default function LanguageSwitcher() {
     };
   }, [isOpen]);
 
-  const handleMouseEnter = () => {
+  const handleButtonMouseEnter = () => {
     // Clear any pending close timeout
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -58,12 +58,21 @@ export default function LanguageSwitcher() {
     }
   };
 
+  const handleDropdownMouseEnter = () => {
+    // Clear any pending close timeout when hovering dropdown
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  };
+
   const handleMouseLeave = () => {
     // Only close on hover leave if not in click mode and not on mobile
     if (!isClickMode && !isMobile) {
       // Add a small delay to allow smooth mouse movement to dropdown
       closeTimeoutRef.current = setTimeout(() => {
         setIsOpen(false);
+        setIsClickMode(false);
       }, 100);
     }
   };
@@ -83,24 +92,24 @@ export default function LanguageSwitcher() {
     setIsClickMode(newIsOpen); // Set click mode only when opening, reset when closing
   };
 
-  // Reset click mode when dropdown closes
-  useEffect(() => {
-    if (!isOpen) {
-      setIsClickMode(false);
-    }
-  }, [isOpen]);
+  // Reset click mode when dropdown closes - removed to avoid setState in effect
+  // useEffect(() => {
+  //   if (!isOpen) {
+  //     setIsClickMode(false);
+  //   }
+  // }, [isOpen]);
 
   return (
     <div 
       className="relative inline-block md:inline-block w-full md:w-auto" 
       ref={dropdownRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       <Button
         variant="custom"
         size="md"
         onClick={handleClick}
+        onMouseEnter={handleButtonMouseEnter}
+        onMouseLeave={handleMouseLeave}
         className="block md:inline-flex px-6 py-4 md:!px-5 md:!py-2 text-2xl md:text-base border-4 md:border-3 !w-full md:!w-auto !text-neo-black uppercase tracking-wider transition-all duration-300 bg-white hover:bg-white/80 md:hover:bg-bold-blue md:hover:text-white gap-2"
         style={{ width: '100%' }}
         aria-label="Change language"
@@ -114,7 +123,7 @@ export default function LanguageSwitcher() {
       {!isMobile && isOpen && (
         <div 
           className="absolute right-0 top-full min-w-[160px] h-2"
-          onMouseEnter={handleMouseEnter}
+          onMouseEnter={handleDropdownMouseEnter}
           onMouseLeave={handleMouseLeave}
           style={{ pointerEvents: 'auto' }}
         />
@@ -159,7 +168,7 @@ export default function LanguageSwitcher() {
               ? 'opacity-100 translate-y-0 pointer-events-auto' 
               : 'opacity-0 -translate-y-2 pointer-events-none'
           }`}
-          onMouseEnter={handleMouseEnter}
+          onMouseEnter={handleDropdownMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           {languages.map((lang) => (

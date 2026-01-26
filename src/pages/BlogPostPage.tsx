@@ -2,12 +2,13 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowRight, Calendar, Clock, Twitter, Linkedin, Link as LinkIcon } from 'lucide-react';
 import { Section, Button, Card } from '../components/ui';
 import { blogPosts } from '../data/blog';
-import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useLanguage } from '../hooks/useLanguage';
+import ScrollReveal, { StaggerContainer, StaggerItem } from '../components/ScrollReveal';
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
-  const mainRef = useScrollReveal<HTMLDivElement>();
+  const { t } = useLanguage();
   
   const post = blogPosts.find(p => p.slug === slug);
   
@@ -36,63 +37,71 @@ export default function BlogPostPage() {
   };
 
   return (
-    <div ref={mainRef}>
+    <div>
       {/* Article Header */}
       <section className="relative overflow-hidden pt-12 md:pt-16 pb-4 md:pb-6">
         <div className="neo-container">
           <div className="max-w-3xl mx-auto">
-            <div className="reveal mb-6">
-              <span className="bg-neo-black text-white font-black px-3 py-1 text-sm">
-                {post.category}
-              </span>
-            </div>
-            
-            <h1 className="reveal font-sora font-extrabold text-4xl sm:text-5xl md:text-5xl text-white leading-tight mb-6">
-              {post.title}
-            </h1>
-            
-            <div className="reveal flex flex-wrap items-center gap-6 text-sm text-neo-black font-bold mb-8">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <time dateTime={post.date}>{formatDate(post.date)}</time>
+            <ScrollReveal animation="snap">
+              <div className="mb-6">
+                <span className="bg-neo-black text-white font-black px-3 py-1 text-sm">
+                  {post.category}
+                </span>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                {post.readTime}
+            </ScrollReveal>
+            
+            <ScrollReveal animation="slam" delay={0.05}>
+              <h1 className="font-sora font-extrabold text-4xl sm:text-5xl md:text-5xl text-white leading-tight mb-6">
+                {post.title}
+              </h1>
+            </ScrollReveal>
+            
+            <ScrollReveal animation="snap" delay={0.1}>
+              <div className="flex flex-wrap items-center gap-6 text-sm text-neo-black font-bold mb-8">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <time dateTime={post.date}>{formatDate(post.date)}</time>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  {post.readTime}
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
             
             {/* Share buttons */}
-            <div className="reveal flex items-center gap-3">
-              <span className="font-display font-bold text-sm">Share:</span>
-              <Button
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(window.location.href)}`}
-                variant="bold-blue"
-                size="sm"
-                className="!p-2"
-                aria-label="Share on Twitter"
-              >
-                <Twitter className="w-4 h-4" />
-              </Button>
-              <Button
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
-                variant="bold-pink"
-                size="sm"
-                className="!p-2"
-                aria-label="Share on LinkedIn"
-              >
-                <Linkedin className="w-4 h-4" />
-              </Button>
-              <Button
-                onClick={copyToClipboard}
-                variant="bold-yellow"
-                size="sm"
-                className="!p-2"
-                aria-label="Copy link to clipboard"
-              >
-                <LinkIcon className="w-4 h-4" />
-              </Button>
-            </div>
+            <ScrollReveal animation="bounce" delay={0.15}>
+              <div className="flex items-center gap-3">
+                <span className="font-display font-bold text-sm">{t('blogPost.share')}</span>
+                <Button
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(window.location.href)}`}
+                  variant="bold-blue"
+                  size="sm"
+                  className="!p-2"
+                  aria-label="Share on Twitter"
+                >
+                  <Twitter className="w-4 h-4" />
+                </Button>
+                <Button
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
+                  variant="bold-pink"
+                  size="sm"
+                  className="!p-2"
+                  aria-label="Share on LinkedIn"
+                >
+                  <Linkedin className="w-4 h-4" />
+                </Button>
+                <Button
+                  onClick={copyToClipboard}
+                  variant="bold-yellow"
+                  size="sm"
+                  className="!p-2"
+                  aria-label="Copy link to clipboard"
+                >
+                  <LinkIcon className="w-4 h-4" />
+                </Button>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -101,9 +110,11 @@ export default function BlogPostPage() {
       <section className="relative overflow-hidden">
         <div className="neo-container">
           <div className="max-w-3xl mx-auto">
-            <div className="reveal aspect-video bg-neo-white border-3 border-neo-black shadow-neo mb-8 flex items-center justify-center">
-              <span className="font-display font-black text-black text-lg">Featured Image</span>
-            </div>
+            <ScrollReveal animation="pop">
+              <div className="aspect-video bg-neo-white border-3 border-neo-black shadow-neo mb-8 flex items-center justify-center">
+                <span className="font-display font-black text-black text-lg">{t('blogPost.featuredImage')}</span>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -111,12 +122,14 @@ export default function BlogPostPage() {
       {/* Article Content */}
       <Section>
         <article className="max-w-3xl mx-auto">
-          <Card className="reveal p-6 md:p-10" background="soft-yellow">
-            <div 
-              className="prose-neo"
-              dangerouslySetInnerHTML={{ __html: formatContent(post.content) }}
-            />
-          </Card>
+          <ScrollReveal animation="wiggle">
+            <Card className="p-6 md:p-10" background="soft-yellow">
+              <div 
+                className="prose-neo"
+                dangerouslySetInnerHTML={{ __html: formatContent(post.content) }}
+              />
+            </Card>
+          </ScrollReveal>
         </article>
       </Section>
 
@@ -124,42 +137,47 @@ export default function BlogPostPage() {
       {relatedPosts.length > 0 && (
         <Section>
           <div className="text-center mb-8 md:mb-10">
-            <h2 className="reveal font-display font-bold text-3xl md:text-4xl mb-4">
-              Related <span className="bg-bold-pink text-white px-2 border-3 border-neo-black shadow-neo-sm">Articles</span>
-            </h2>
+            <ScrollReveal animation="pop">
+              <h2 className="font-display font-bold text-3xl md:text-4xl mb-4">
+                {t('blogPost.relatedArticles')}
+              </h2>
+            </ScrollReveal>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
             {relatedPosts.map((relatedPost, index) => {
               const cardBgs: ('soft-pink' | 'soft-blue')[] = ['soft-pink', 'soft-blue'];
               const cardBg = cardBgs[index % cardBgs.length];
+              const animations: Array<'wiggle' | 'twist'> = ['wiggle', 'twist'];
 
               return (
-                <Link key={relatedPost.slug} to={`/blog/${relatedPost.slug}`} className="block">
-                  <Card
-                    hoverable
-                    className="reveal p-5 md:p-6"
-                    background={cardBg}
-                    as="article"
-                  >
-                    <span className="bg-neo-black text-white font-black px-2 py-0.5 text-xs mb-3 inline-block">
-                      {relatedPost.category}
-                    </span>
-                    <h3 className="font-display font-bold text-xl mb-3 leading-tight">
-                      {relatedPost.title}
-                    </h3>
-                    <p className="font-body text-[15px] text-neo-black mb-4 line-clamp-2">
-                      {relatedPost.excerpt}
-                    </p>
-                    <div className="flex items-center gap-2 font-display font-black text-neo-black text-sm">
-                      Read More
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  </Card>
-                </Link>
+                <StaggerItem key={relatedPost.slug} animation={animations[index % animations.length]}>
+                  <Link to={`/blog/${relatedPost.slug}`} className="block h-full">
+                    <Card
+                      hoverable
+                      className="p-5 md:p-6 h-full"
+                      background={cardBg}
+                      as="article"
+                    >
+                      <span className="bg-neo-black text-white font-black px-2 py-0.5 text-xs mb-3 inline-block">
+                        {relatedPost.category}
+                      </span>
+                      <h3 className="font-display font-bold text-xl mb-3 leading-tight">
+                        {relatedPost.title}
+                      </h3>
+                      <p className="font-body text-[15px] text-neo-black mb-4 line-clamp-2">
+                        {relatedPost.excerpt}
+                      </p>
+                      <div className="flex items-center gap-2 font-display font-black text-neo-black text-sm">
+                        {t('blog.readMore')}
+                        <ArrowRight className="w-4 h-4" />
+                      </div>
+                    </Card>
+                  </Link>
+                </StaggerItem>
               );
             })}
-          </div>
+          </StaggerContainer>
         </Section>
       )}
 
@@ -169,18 +187,22 @@ export default function BlogPostPage() {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-bold-blue/20 rounded-full blur-3xl -ml-32 -mb-32"></div>
         
         <div className="neo-container relative z-10 text-center">
-          <h2 className="reveal font-display font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white mb-6 max-w-4xl mx-auto">
-            Need WordPress <span className="text-bold-yellow italic">Help?</span>
-          </h2>
-          <p className="reveal font-body text-base md:text-lg text-white/90 max-w-3xl mx-auto mb-8 font-medium">
-            We can help you implement these strategies and more. Let's discuss your project.
-          </p>
-          <div className="reveal">
+          <ScrollReveal animation="slam">
+            <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white mb-6 max-w-4xl mx-auto">
+              {t('blogPost.cta.title')}
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal animation="snap" delay={0.1}>
+            <p className="font-body text-base md:text-lg text-white/90 max-w-3xl mx-auto mb-8 font-medium">
+              {t('blogPost.cta.description')}
+            </p>
+          </ScrollReveal>
+          <ScrollReveal animation="bounce" delay={0.2}>
             <Button to="/contact" variant="bold-yellow" size="lg">
-              Contact Us
+              {t('cta.button.contact')}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
     </div>
