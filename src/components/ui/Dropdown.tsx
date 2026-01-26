@@ -89,7 +89,7 @@ export default function Dropdown({
           type="button"
           onClick={() => setIsOpen(!isOpen)}
           className={`
-            w-full px-4 py-3 border-3 border-neo-black bg-white font-body font-bold
+            w-full px-3 py-2 md:px-4 md:py-3 border-3 border-neo-black bg-white font-body font-bold text-sm md:text-base
             focus:outline-none
             transition-shadow duration-150 shadow-neo-sm
             flex items-center justify-between text-left
@@ -123,7 +123,7 @@ export default function Dropdown({
                   type="button"
                   onClick={() => handleSelect(option.value)}
                   className={`
-                    w-full px-4 py-3 text-left font-body font-bold border-b-3 border-neo-black last:border-b-0
+                    w-full px-3 py-2 md:px-4 md:py-3 text-left font-body font-bold text-sm md:text-base border-b-3 border-neo-black last:border-b-0
                     transition-colors flex items-center justify-between
                     ${isSelected ? 'bg-bold-pink text-white' : `text-neo-black ${hoverColor}`}
                   `}

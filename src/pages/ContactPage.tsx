@@ -79,8 +79,8 @@ export default function ContactPage() {
       <Section>
         <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start max-w-6xl mx-auto" staggerDelay={0.15} delay={0.15}>
           <StaggerItem animation="wiggle">
-            <div className="bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-6 md:p-8 rounded-[10px]">
-              <h3 className="font-display font-black text-2xl md:text-3xl mb-4 text-center">
+            <div className="bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-4 md:p-8 rounded-[10px]">
+              <h3 className="font-display font-black text-xl md:text-3xl mb-3 md:mb-4 text-center">
                 {t('contact.form.title').split(t('contact.form.title.highlight')).map((part, i) => (
                   <React.Fragment key={i}>
                     {part}
@@ -93,8 +93,8 @@ export default function ContactPage() {
           </StaggerItem>
           
           <StaggerItem animation="twist">
-            <div className="bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-6 md:p-8 rounded-[10px]">
-              <h3 className="font-display font-black text-2xl md:text-3xl mb-4 text-center">
+            <div className="bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-4 md:p-8 rounded-[10px]">
+              <h3 className="font-display font-black text-xl md:text-3xl mb-3 md:mb-4 text-center">
                 {t('contact.schedule.title').split(t('contact.schedule.title.highlight')).map((part, i) => (
                   <React.Fragment key={i}>
                     {part}
@@ -102,13 +102,13 @@ export default function ContactPage() {
                   </React.Fragment>
                 ))}
               </h3>
-              <p className="font-body text-base md:text-lg text-neo-black mb-6 mt-11 font-bold whitespace-pre-line">
+              <p className="font-body text-sm md:text-lg text-neo-black mb-4 md:mb-6 mt-6 md:mt-11 font-bold whitespace-pre-line">
                 {t('contact.schedule.description')}
               </p>
               <Button
                 variant="bold-blue"
-                size="lg"
-                className="w-full text-[18px]"
+                size="md"
+                className="w-full md:px-8 md:py-4 md:text-lg"
                 data-cal-link="igordjuric/15min"
                 data-cal-namespace="15min"
                 data-cal-config='{"layout":"month_view","theme":"light"}'
@@ -124,7 +124,7 @@ export default function ContactPage() {
         <div className="text-center mb-8 md:mb-10">
           <ScrollReveal animation="pop">
             <h2 className="font-display font-bold text-2xl md:text-4xl mb-16">
-              <span className="bg-bold-purple text-white px-2 border-3 border-neo-black shadow-neo-sm whitespace-nowrap">{t('faq.title')}</span>
+              <span className="bg-bold-purple text-white px-2 border-3 border-neo-black shadow-neo-sm sm:whitespace-nowrap">{t('faq.title')}</span>
             </h2>
           </ScrollReveal>
         </div>
@@ -140,11 +140,11 @@ export default function ContactPage() {
                 <div className="bg-white border-3 border-neo-black shadow-neo rounded-[10px]">
                   <button
                     onClick={() => toggleFaq(index)}
-                    className="w-full px-5 py-4 flex items-center justify-between text-left"
+                    className="w-full px-5 py-4 flex items-center justify-between text-left gap-3"
                     aria-expanded={isOpen}
                     aria-controls={`faq-answer-${index}`}
                   >
-                    <span className="font-display font-bold text-lg md:text-xl pr-4 leading-tight">{faq.question}</span>
+                    <span className="font-display font-bold text-lg md:text-xl leading-tight min-w-0">{faq.question}</span>
                     <span className="neo-shadow-wrapper" style={{ display: 'inline-block', position: 'relative' }}>
                       <span 
                         className={`flex-shrink-0 w-10 h-10 ${vibrantBg} text-white border-2 border-neo-black rounded-[10px] flex items-center justify-center transition-all duration-300 ease-out hover:translate-x-[3px] hover:translate-y-[3px] active:translate-x-[4px] active:translate-y-[4px] transform-gpu relative z-10`}

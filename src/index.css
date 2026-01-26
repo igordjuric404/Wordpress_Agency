@@ -217,10 +217,23 @@
     padding-bottom: 6px;
   }
   
-  /* Full-width wrapper - use block display */
+  /* Full-width wrapper - use block display, no horizontal overflow */
   .neo-shadow-wrapper-full {
     display: block !important;
     width: 100% !important;
+    /* Remove right padding to prevent horizontal overflow */
+    padding-right: 0 !important;
+    /* Inner element will be sized to leave room for shadow */
+  }
+  
+  /* For full-width wrappers, make the inner element narrower to leave room for shadow */
+  .neo-shadow-wrapper-full > * {
+    width: calc(100% - 6px) !important;
+  }
+  
+  /* Adjust shadow position for full-width to match narrower inner element */
+  .neo-shadow-wrapper-full::before {
+    width: calc(100% - 6px) !important;
   }
   
   /* Shadow pseudo-element matches exact button dimensions, offset by 6px */

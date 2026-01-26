@@ -25,9 +25,9 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           id={textareaId}
           className={`
-            w-full px-4 py-3 border-3 border-neo-black bg-white font-body font-bold
+            w-full px-3 py-2 md:px-4 md:py-3 border-3 border-neo-black bg-white font-body font-bold text-sm md:text-base
             focus:outline-none
-            transition-shadow duration-150 resize-y min-h-[120px] shadow-neo-sm
+            transition-shadow duration-150 resize-y min-h-[100px] md:min-h-[120px] shadow-neo-sm
             ${error ? 'border-bold-pink ring-2 ring-bold-pink/20' : ''}
             ${className}
           `}

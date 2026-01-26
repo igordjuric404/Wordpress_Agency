@@ -253,12 +253,22 @@ export default function HomePage() {
             {/* CTAs */}
             <div className="flex flex-col items-center sm:items-start sm:flex-row gap-3 md:gap-4">
               <ScrollReveal animation="bounce" delay={0.3}>
-                <Button to="/services" variant="bold-pink" size="lg" className="text-[18px]">
+                <Button 
+                  to="/services" 
+                  variant="bold-pink" 
+                  size="md" 
+                  className="md:px-8 md:py-4 md:text-lg"
+                >
                   {t('hero.cta.services')}
                 </Button>
               </ScrollReveal>
               <ScrollReveal animation="bounce" delay={0.45}>
-                <Button to="/contact" variant="bold-blue" size="lg" className="text-[18px]">
+                <Button 
+                  to="/contact" 
+                  variant="bold-blue" 
+                  size="md" 
+                  className="md:px-8 md:py-4 md:text-lg"
+                >
                   {t('hero.cta.contact')}
                 </Button>
               </ScrollReveal>
@@ -486,12 +496,12 @@ export default function HomePage() {
         <ScrollReveal animation="bounce" delay={0.2}>
           <div className="text-center mt-8 md:mt-12">
           {/* Mobile: different CTA text */}
-          <Button to="/blog" variant="vibrant-yellow" className="md:hidden text-[18px]">
+          <Button to="/blog" variant="vibrant-yellow" className="md:hidden">
             {t('blog.cta.mobile')}
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
           {/* Desktop: original CTA */}
-          <Button to="/blog" variant="vibrant-yellow" className="hidden md:inline-flex text-[18px]">
+          <Button to="/blog" variant="vibrant-yellow" className="hidden md:inline-flex text-lg">
             {t('blog.cta.desktop')}
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
@@ -516,7 +526,12 @@ export default function HomePage() {
             </p>
           </ScrollReveal>
           <ScrollReveal animation="pop" delay={0.2} margin="-100px">
-            <Button to="/contact" variant="bold-yellow" size="lg" className="text-[18px]">
+            <Button 
+              to="/contact" 
+              variant="bold-yellow" 
+              size="md" 
+              className="md:px-8 md:py-4 md:text-lg"
+            >
               {t('cta.button.contact')}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
@@ -536,8 +551,8 @@ export default function HomePage() {
         <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start" staggerDelay={0.15}>
           {/* Form on Left */}
           <StaggerItem animation="wiggle">
-            <div className="bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-6 md:p-8 rounded-[10px]">
-            <h3 className="font-display font-black text-2xl md:text-3xl mb-4 text-center">
+            <div className="bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-4 md:p-8 rounded-[10px]">
+            <h3 className="font-display font-black text-xl md:text-3xl mb-3 md:mb-4 text-center">
               Send us a <span className="bg-bold-pink text-white px-2 border-3 border-neo-black shadow-neo-sm">Message</span>
             </h3>
             <ContactForm />
@@ -546,17 +561,17 @@ export default function HomePage() {
           
           {/* Scheduling Section on Right */}
           <StaggerItem animation="twist">
-            <div className="bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-6 md:p-8 rounded-[10px]">
-            <h3 className="font-display font-black text-2xl md:text-3xl mb-4 text-center">
+            <div className="bg-white border-2 md:border-3 border-neo-black shadow-neo-lg p-4 md:p-8 rounded-[10px]">
+            <h3 className="font-display font-black text-xl md:text-3xl mb-3 md:mb-4 text-center">
                Book a <span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm">Call</span>
             </h3>
-            <p className="font-body text-base md:text-lg text-neo-black mb-6 mt-11 font-bold whitespace-pre-line">
+            <p className="font-body text-sm md:text-lg text-neo-black mb-4 md:mb-6 mt-6 md:mt-11 font-bold whitespace-pre-line">
               Prefer to discuss your project in a call?{'\n'}Book a time that works for you.
             </p>
             <Button
               variant="bold-blue"
-              size="lg"
-              className="w-full text-[18px]"
+              size="md"
+              className="w-full md:px-8 md:py-4 md:text-lg"
               data-cal-link="igordjuric/15min"
               data-cal-namespace="15min"
               data-cal-config='{"layout":"month_view","theme":"light"}'

@@ -252,7 +252,12 @@ export default function PortfolioDetailPage() {
             </p>
           </ScrollReveal>
           <ScrollReveal animation="bounce" delay={0.2}>
-            <Button to="/contact" variant="secondary" size="lg" className="bg-bold-green text-neo-black shadow-neo-vibrant-pink px-12 py-5 text-xl font-black uppercase">
+            <Button 
+              to="/contact" 
+              variant="secondary" 
+              size="md" 
+              className="bg-bold-green text-neo-black shadow-neo-vibrant-pink font-black uppercase md:px-12 md:py-5 md:text-xl"
+            >
               Get a Free Quote
               <ArrowRight className="ml-2 w-7 h-7" />
             </Button>

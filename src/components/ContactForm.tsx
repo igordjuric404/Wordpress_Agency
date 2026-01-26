@@ -226,7 +226,7 @@ export default function ContactForm() {
         })()}
       </div>
 
-      <Button type="submit" fullWidth disabled={isSubmitting} variant="vibrant-pink" className="py-3 text-[18px]">
+      <Button type="submit" fullWidth disabled={isSubmitting} variant="vibrant-pink" size="md" className="md:px-8 md:py-4 md:text-lg">
         {isSubmitting ? t('contact.form.submitting') : t('contact.form.submit')}
       </Button>
     </form>

@@ -198,7 +198,12 @@ export default function BlogPostPage() {
             </p>
           </ScrollReveal>
           <ScrollReveal animation="bounce" delay={0.2}>
-            <Button to="/contact" variant="bold-yellow" size="lg">
+            <Button 
+              to="/contact" 
+              variant="bold-yellow" 
+              size="md"
+              className="md:px-8 md:py-4 md:text-lg"
+            >
               {t('cta.button.contact')}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>

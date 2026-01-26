@@ -27,15 +27,20 @@ export default function NotFoundPage() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button to="/" variant="bold-blue" size="lg">
+            <Button 
+              to="/" 
+              variant="bold-blue" 
+              size="md"
+              className="md:px-8 md:py-4 md:text-lg"
+            >
               <Home className="mr-2 w-5 h-5" />
               {t('404.goHome')}
             </Button>
             <Button 
               onClick={() => window.history.back()} 
               variant="custom"
-              size="lg"
-              className="bg-white text-neo-black"
+              size="md"
+              className="bg-white text-neo-black md:px-8 md:py-4 md:text-lg"
             >
               <ArrowLeft className="mr-2 w-5 h-5" />
               {t('404.goBack')}
