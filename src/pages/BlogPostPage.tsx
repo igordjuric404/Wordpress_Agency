@@ -50,7 +50,7 @@ export default function BlogPostPage() {
               </div>
             </ScrollReveal>
             
-            <ScrollReveal animation="slam" delay={0.05}>
+            <ScrollReveal animation="slam" margin="100%" delay={0.05}>
               <h1 className="font-sora font-extrabold text-4xl sm:text-5xl md:text-5xl text-white leading-tight mb-6">
                 {post.title}
               </h1>

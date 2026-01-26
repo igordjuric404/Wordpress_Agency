@@ -16,7 +16,7 @@ export default function ServicesPage() {
       <section className="relative overflow-hidden pt-12 md:pt-24 pb-4 md:pb-6">
         <div className="neo-container">
           <div className="max-w-4xl mx-auto text-center">
-            <ScrollReveal animation="slam">
+            <ScrollReveal animation="slam" margin="100%">
               <h1 className="font-extrabold text-4xl sm:text-5xl md:text-5xl lg:text-6xl text-white leading-tight">
                 <span className="font-sora">What We </span><span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Do</span>
               </h1>
@@ -27,7 +27,7 @@ export default function ServicesPage() {
 
       {/* Services Grid */}
       <Section>
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto" margin="-100px" delay={0.15} staggerDelay={0.1}>
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto" margin="-30%" delay={0.15} staggerDelay={0.1}>
           {services.map((service, index) => {
             const backgrounds: ('soft-pink' | 'soft-green' | 'soft-yellow' | 'soft-blue' | 'soft-purple' | 'soft-orange' | 'white')[] = ['soft-orange', 'soft-yellow', 'soft-blue', 'soft-purple', 'white', 'soft-green'];
             const vibrantColors = ['text-bold-orange', 'text-bold-yellow', 'text-bold-blue', 'text-bold-purple', 'text-bold-green', 'text-bold-pink'];

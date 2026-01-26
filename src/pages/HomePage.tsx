@@ -134,9 +134,9 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden min-h-[calc(100vh-4rem-4px)] md:min-h-[calc(100vh-6rem-4px)] flex items-center">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative w-full">
-          {/* Hero Image - Absolute positioned on desktop */}
+          {/* Hero Image - Desktop (Absolute) */}
           <div className="hidden lg:block absolute right-20 bottom-0 w-[45%] max-w-[500px] z-0 pointer-events-none">
-            <ScrollReveal animation="pop" delay={0.6}>
+            <ScrollReveal animation="pop" delay={0.6} margin="100%">
               <img 
                 src="/hero-visual.png" 
                 alt="Hero illustration" 
@@ -146,9 +146,10 @@ export default function HomePage() {
           </div>
 
           {/* Content - Full width on all screens */}
-          <div className="relative z-10 max-w-4xl">
-            <ScrollReveal animation="slam">
-              <h1 className="font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white mb-6 md:mb-8 relative" style={{ lineHeight: '1.2' }}>
+          <div className="relative z-10 max-w-4xl flex flex-col items-center lg:block text-center lg:text-left">
+            {/* Header - First */}
+            <ScrollReveal animation="slam" delay={0} margin="100%">
+              <h1 className="font-extrabold text-[42px] sm:text-5xl md:text-6xl lg:text-6xl text-white mb-6 md:mb-8 relative tracking-tighter" style={{ lineHeight: '1.1' }}>
               <span className="font-sora whitespace-pre-line">
                 <EditableText copyKey="hero.title" as="span">
                   {(() => {
@@ -199,7 +200,8 @@ export default function HomePage() {
               </span>
               </h1>
             </ScrollReveal>
-            <ScrollReveal animation="snap" delay={0.15}>
+            {/* Subheader - Second */}
+            <ScrollReveal animation="snap" delay={0.15} margin="100%">
               <p className="font-body text-base md:text-lg lg:text-xl text-neo-gray-dark mb-6 md:mb-8 max-w-2xl">
               <EditableText copyKey="hero.subtitle" as="span" className="whitespace-pre-line">
                 {(() => {
@@ -252,7 +254,8 @@ export default function HomePage() {
             
             {/* CTAs */}
             <div className="flex flex-col items-center sm:items-start sm:flex-row gap-3 md:gap-4">
-              <ScrollReveal animation="bounce" delay={0.3}>
+              {/* First CTA - Third */}
+              <ScrollReveal animation="bounce" delay={0.3} margin="100%">
                 <Button 
                   to="/services" 
                   variant="bold-pink" 
@@ -262,7 +265,8 @@ export default function HomePage() {
                   {t('hero.cta.services')}
                 </Button>
               </ScrollReveal>
-              <ScrollReveal animation="bounce" delay={0.45}>
+              {/* Second CTA - Fourth */}
+              <ScrollReveal animation="bounce" delay={0.45} margin="100%">
                 <Button 
                   to="/contact" 
                   variant="bold-blue" 
@@ -273,6 +277,17 @@ export default function HomePage() {
                 </Button>
               </ScrollReveal>
             </div>
+
+            {/* Hero Image - Mobile (Stacked below) */}
+            <div className="lg:hidden mt-8 w-full max-w-[300px]">
+              <ScrollReveal animation="pop" delay={0.6} margin="100%">
+                <img 
+                  src="/hero-visual.png" 
+                  alt="Hero illustration" 
+                  className="w-full h-auto object-contain drop-shadow-2xl"
+                />
+              </ScrollReveal>
+            </div>
           </div>
         </div>
       </section>
@@ -280,7 +295,7 @@ export default function HomePage() {
       {/* Services Overview */}
       <Section id="services-overview" className="pb-16 md:pb-16">
           <div className="text-center mb-8 md:mb-10">
-            <ScrollReveal animation="pop" margin="-100px">
+            <ScrollReveal animation="pop" margin="-30%">
               <h2 className="font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
                 <span className="font-sora">What We </span><span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Do</span>
               </h2>
@@ -311,7 +326,7 @@ export default function HomePage() {
             const itemDelay = rowPosition * 0.1;
             
             return (
-              <StaggerItem key={service.id} animation={animations[index % animations.length]} useOwnViewport={true} delay={itemDelay} margin="-150px">
+              <StaggerItem key={service.id} animation={animations[index % animations.length]} useOwnViewport={true} delay={itemDelay} margin="-30%">
                 <Card 
                   hoverable 
                   className="p-4 md:p-6 flex flex-col h-full"
@@ -354,7 +369,7 @@ export default function HomePage() {
       {/* Process Section */}
       <Section id="process" className="py-16 md:py-16">
           <div className="text-center mb-8 md:mb-10">
-            <ScrollReveal animation="pop" margin="-100px">
+            <ScrollReveal animation="pop" margin="-30%">
               <h2 className="font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
                 <span className="font-sora">How We </span><span className="bg-bold-purple text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Work</span>
               </h2>
@@ -449,7 +464,7 @@ export default function HomePage() {
       {/* Blog Teaser */}
       <Section id="blog" className="py-12 md:py-16">
           <div className="text-center mb-6 md:mb-10">
-            <ScrollReveal animation="pop" margin="-100px">
+            <ScrollReveal animation="pop" margin="-30%">
               <h2 className="font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
                 <span className="bg-bold-yellow text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Blog</span>
               </h2>
@@ -515,17 +530,17 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-bold-blue/20 rounded-full blur-3xl -ml-32 -mb-32"></div>
         
         <div className="neo-container relative z-10 text-center">
-          <ScrollReveal animation="pop" margin="-100px">
+          <ScrollReveal animation="pop" margin="-30%">
             <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white mb-6 max-w-4xl mx-auto">
               {t('cta.title')}
             </h2>
           </ScrollReveal>
-          <ScrollReveal animation="pop" delay={0.1} margin="-100px">
+          <ScrollReveal animation="pop" delay={0.1} margin="-30%">
             <p className="font-body text-base md:text-lg text-white/90 max-w-3xl mx-auto mb-8 font-medium">
               {t('cta.description')}
             </p>
           </ScrollReveal>
-          <ScrollReveal animation="pop" delay={0.2} margin="-100px">
+          <ScrollReveal animation="pop" delay={0.2} margin="-30%">
             <Button 
               to="/contact" 
               variant="bold-yellow" 
@@ -542,7 +557,7 @@ export default function HomePage() {
       {/* Contact Section */}
       <Section id="contact" className="py-16 md:py-16">
           <div className="text-center mb-8 md:mb-12">
-            <ScrollReveal animation="pop" margin="-100px">
+            <ScrollReveal animation="pop" margin="-30%">
               <h2 className="font-extrabold text-4xl md:text-5xl mb-16 text-white relative">
                 <span className="font-sora">Contact </span><span className="bg-bold-blue text-white px-2 border-3 border-neo-black shadow-neo-sm font-display font-bold" style={{ textShadow: 'none' }}>Us</span>
               </h2>

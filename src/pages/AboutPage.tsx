@@ -13,7 +13,7 @@ export default function AboutPage() {
       <section className="relative overflow-hidden pt-12 md:pt-24 pb-4 md:pb-6">
         <div className="neo-container">
           <div className="max-w-4xl mx-auto text-center">
-            <ScrollReveal animation="slam">
+            <ScrollReveal animation="slam" margin="100%">
               <h1 className="font-sora font-extrabold text-4xl sm:text-5xl md:text-5xl lg:text-6xl text-white leading-tight">
                 {(() => {
                   const title = t('about.title');

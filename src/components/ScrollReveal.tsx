@@ -133,7 +133,7 @@ export default function ScrollReveal({
   delay = 0,
   className = '',
   once = true,
-  margin = '300px',
+  margin = '-30%', // Trigger when element is further into viewport
 }: ScrollRevealProps) {
   const variants = animationVariants[animation];
   
@@ -177,7 +177,7 @@ export function StaggerContainer({
   children, 
   className = '',
   staggerDelay = 0.08,
-  margin = '-300px',
+  margin = '-30%', // Trigger when element is further into viewport
   delay = 0,
 }: StaggerContainerProps) {
   return (
@@ -216,7 +216,7 @@ export function StaggerItem({
   animation = 'pop',
   className = '',
   useOwnViewport = false,
-  margin = '-300px',
+  margin = '-30%', // Trigger when element is further into viewport
   delay = 0,
 }: StaggerItemProps) {
   if (useOwnViewport) {
